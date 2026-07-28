@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+.next/
+out/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Tooling and deployment
+.turbo/
+.vercel/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local certificates and keys
+*.pem
+
+# QA and test artifacts
+gui-test-screenshots/
+.qa-shots/
+qa-screenshots/
+
+# Agent session artifacts
+.zcode/
+HERO_REDESIGN_STATUS.md
+
+# Design reference material (not imported by app code)
+reference/
