@@ -46,3 +46,5 @@ HERO_REDESIGN_STATUS.md
 
 # Design reference material (not imported by app code)
 reference/
+# graph tooling output
+graphify-out/
