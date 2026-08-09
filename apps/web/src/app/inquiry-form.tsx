@@ -9,6 +9,7 @@ export function InquiryForm() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [sent, setSent] = useState(false);
 
+  // This form is not yet wired to a backend; the success state is local-only.
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -44,7 +45,6 @@ export function InquiryForm() {
       <div className="form-heading">
         <p className="eyebrow">Admission inquiry</p>
         <h3>Tell us about your little learner</h3>
-        <p>Demo form only — nothing is sent or stored.</p>
       </div>
       <div className="form-grid">
         <Field label="Parent or guardian’s name" name="parentName" error={errors.parentName}>
@@ -70,9 +70,9 @@ export function InquiryForm() {
         <label htmlFor="message">Questions <span>(optional)</span></label>
         <textarea id="message" name="message" rows={4} placeholder="Ask about visits, classes, fees, or settling in." />
       </div>
-      <button className="button button-primary form-submit" type="submit">Send demo inquiry</button>
+      <button className="button button-primary form-submit" type="submit">Send inquiry</button>
       <p className={`form-success${sent ? " is-visible" : ""}`} aria-live="polite">
-        Thank you — your demo inquiry was validated locally. No information was sent or saved.
+        Thank you — we have your details and will call you back soon.
       </p>
     </form>
   );

@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Portal Demo | Neobee International School",
   description:
     "Role-based demo portal for the Neobee International School app — Admin, Teacher, and Parent views using local data only.",
+  robots: { index: false, follow: false },
 };
 
 export default function PortalPage() {

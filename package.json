@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "pnpm --recursive --parallel --if-present dev",
+    "dev:web": "cd apps/web/ && next dev",
+    "start:web": "cd apps/web/ && next start",
+    "start:app": "cd apps/app/ && expo start",
     "build": "pnpm --recursive --if-present build",
     "lint": "pnpm --recursive --if-present lint",
     "typecheck": "pnpm --recursive --if-present typecheck",
@@ -13,5 +16,8 @@
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=10.0.0"
+  },
+  "dependencies": {
+    "playwright-core": "^1.59.1"
   }
 }

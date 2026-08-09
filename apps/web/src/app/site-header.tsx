@@ -3,12 +3,10 @@
 import { useState } from "react";
 
 const links = [
-  ["About", "#about"],
   ["Classes", "#classes"],
-  ["Curriculum", "#curriculum"],
+  ["A day here", "#day"],
   ["Campus", "#campus"],
   ["Admissions", "#admissions"],
-  ["Notices", "#notices"],
   ["Contact", "#contact"],
 ] as const;
 
@@ -18,9 +16,9 @@ export function SiteHeader() {
   return (
     <header className="site-header">
       <div className="container nav-shell">
-        <a className="brand" href="#top" aria-label="Neobee International School home">
+        <a className="brand" href="#main-content" aria-label="Neobee Preschool home">
           <span className="brand-mark" aria-hidden="true"><BeeIcon /></span>
-          <span className="brand-copy"><strong>Neobee</strong><small>International School</small></span>
+          <span className="brand-copy"><strong>Neobee Preschool</strong><small>part of Neobee International School</small></span>
         </a>
         <button className="menu-button" type="button" aria-expanded={open} aria-controls="site-navigation" onClick={() => setOpen((value) => !value)}>
           <span className="sr-only">{open ? "Close navigation" : "Open navigation"}</span>
@@ -28,9 +26,8 @@ export function SiteHeader() {
         </button>
         <nav id="site-navigation" className={open ? "site-nav is-open" : "site-nav"} aria-label="Main navigation">
           {links.map(([label, href]) => <a key={href} href={href} onClick={() => setOpen(false)}>{label}</a>)}
-          <a className="portal-link" href="/portal">Portal demo</a>
         </nav>
-        <a className="button button-primary nav-cta" href="#inquiry">Enquire now</a>
+        <a className="button button-primary nav-cta" href="#admissions">Enquire now</a>
       </div>
     </header>
   );
