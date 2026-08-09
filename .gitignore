@@ -1,6 +1,8 @@
 # Dependencies
 node_modules/
 .pnpm-store/
+# Stray npm lockfile in a pnpm workspace
+package-lock.json
 
 # Build output
 .next/
