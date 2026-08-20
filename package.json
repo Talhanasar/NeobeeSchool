@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "pnpm --recursive --parallel --if-present dev",
-    "dev:web": "cd apps/web/ && next dev",
-    "start:web": "cd apps/web/ && next start",
-    "start:app": "cd apps/app/ && expo start",
+    "dev:web": "pnpm --filter @neobee/web dev",
+    "dev:mobile": "pnpm --filter @neobee/mobile start",
+    "start:web": "pnpm --filter @neobee/web start",
+    "start:mobile": "pnpm --filter @neobee/mobile start",
     "build": "pnpm --recursive --if-present build",
     "lint": "pnpm --recursive --if-present lint",
     "typecheck": "pnpm --recursive --if-present typecheck",
