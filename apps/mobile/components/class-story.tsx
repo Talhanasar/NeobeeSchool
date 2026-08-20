@@ -1,4 +1,5 @@
-import { Pressable, Text } from 'react-native';
+import { Image, Pressable, Text } from 'react-native';
+import type { ImageSourcePropType } from 'react-native';
 import { colors, space, text } from '@/theme/tokens';
 import { fontFamily } from '@/theme/typography';
 
@@ -8,6 +9,7 @@ type ClassStoryProps = {
   readonly name: string;
   readonly age: string;
   readonly tone: ClassStoryTone;
+  readonly image?: ImageSourcePropType;
   readonly onPress: () => void;
 };
 
@@ -18,7 +20,7 @@ const toneBackground: Record<ClassStoryTone, string> = {
   rose: colors.rose,
 };
 
-export function ClassStory({ name, age, tone, onPress }: ClassStoryProps) {
+export function ClassStory({ name, age, tone, image, onPress }: ClassStoryProps) {
   return (
     <Pressable
       accessibilityRole="button"
@@ -34,10 +36,23 @@ export function ClassStory({ name, age, tone, onPress }: ClassStoryProps) {
         borderWidth: 1,
         borderColor: colors.border,
         justifyContent: 'flex-end',
-        minHeight: 104,
+        minHeight: image ? 188 : 104,
         opacity: pressed ? 0.85 : 1,
       })}
     >
+      {image ? (
+        <Image
+          source={image}
+          accessibilityLabel={name}
+          style={{
+            width: '100%',
+            height: 80,
+            borderRadius: 12,
+            marginBottom: space.s2,
+          }}
+          resizeMode="cover"
+        />
+      ) : null}
       <Text
         style={{
           fontFamily: fontFamily.heading,

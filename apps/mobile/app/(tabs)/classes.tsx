@@ -2,6 +2,7 @@ import { ScrollView, View } from 'react-native';
 import { colors, space } from '@/theme/tokens';
 import { SectionHeading, ClassCard, InfoRow, Card } from '@/components';
 import { classes, curriculum } from '@/lib/content';
+import { photos } from '@/lib/photos';
 
 export default function ClassesScreen() {
   return (
@@ -22,7 +23,12 @@ export default function ClassesScreen() {
         />
         <View style={{ gap: space.s5 }}>
           {classes.map((item) => (
-            <ClassCard key={item.name} item={item} />
+            <ClassCard
+              key={item.name}
+              item={item}
+              image={photos[item.photoKey].source}
+              imageAspectRatio={photos[item.photoKey].aspectRatio}
+            />
           ))}
         </View>
       </View>

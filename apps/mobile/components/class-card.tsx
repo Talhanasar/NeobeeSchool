@@ -1,4 +1,5 @@
-import { View, Text } from 'react-native';
+import { Image, View, Text } from 'react-native';
+import type { ImageSourcePropType } from 'react-native';
 import { colors, space, text } from '@/theme/tokens';
 import { fontFamily } from '@/theme/typography';
 import { classes } from '@/lib/content';
@@ -9,6 +10,8 @@ type ClassItem = (typeof classes)[number];
 
 type ClassCardProps = {
   readonly item: ClassItem;
+  readonly image?: ImageSourcePropType;
+  readonly imageAspectRatio?: number;
 };
 
 const colorMap: Record<
@@ -21,7 +24,7 @@ const colorMap: Record<
   rose: { border: colors.rose, chipTone: 'rose' },
 };
 
-export function ClassCard({ item }: ClassCardProps) {
+export function ClassCard({ item, image, imageAspectRatio }: ClassCardProps) {
   const accent = colorMap[item.color];
 
   return (
@@ -29,6 +32,20 @@ export function ClassCard({ item }: ClassCardProps) {
       tone="white"
       style={{ overflow: 'hidden', borderTopWidth: 5, borderTopColor: accent.border }}
     >
+      {image ? (
+        <Image
+          source={image}
+          accessibilityLabel={`${item.name} class`}
+          style={{
+            width: '100%',
+            // ponytail: fixed 220dp band, centre-cropped. Upgrade when the class photos get re-shot landscape.
+            height: 220,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+          }}
+          resizeMode="cover"
+        />
+      ) : null}
       <View style={{ padding: space.s6, gap: space.s3 }}>
         <View
           style={{

@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { SplashOverlay } from '@/components';
+import { SessionProvider } from '@/lib/session';
 import { colors } from '@/theme/tokens';
 import { useAppFonts } from '@/theme/typography';
 
@@ -13,7 +14,8 @@ export default function RootLayout() {
   const handleSplashFinish = useCallback(() => setSplashDone(true), []);
 
   return (
-    <SafeAreaProvider style={{ flex: 1, backgroundColor: colors.cream }}>
+    <SessionProvider>
+      <SafeAreaProvider style={{ flex: 1, backgroundColor: colors.cream }}>
       <StatusBar style="dark" />
       {ready ? (
         <Stack
@@ -26,6 +28,7 @@ export default function RootLayout() {
       {splashDone ? null : (
         <SplashOverlay ready={ready} onFinish={handleSplashFinish} />
       )}
-    </SafeAreaProvider>
+      </SafeAreaProvider>
+    </SessionProvider>
   );
 }

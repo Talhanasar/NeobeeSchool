@@ -4,6 +4,7 @@ import { colors, space, text } from '@/theme/tokens';
 import { fontFamily } from '@/theme/typography';
 import { BrandMark } from './brand-mark';
 import { Icon } from './icon';
+import { LoginMenu } from './login-menu';
 import { contact } from '@/lib/content';
 
 export function AppHeader() {
@@ -30,14 +31,16 @@ export function AppHeader() {
       >
         <View
           style={{
+            flex: 1,
             flexDirection: 'row',
             alignItems: 'center',
             gap: space.s3,
           }}
         >
           <BrandMark size={40} />
-          <View style={{ gap: 0 }}>
+          <View style={{ flex: 1, gap: 0 }}>
             <Text
+              numberOfLines={1}
               style={{
                 fontFamily: fontFamily.heading,
                 fontSize: text.lg,
@@ -48,6 +51,7 @@ export function AppHeader() {
               Neobee
             </Text>
             <Text
+              numberOfLines={1}
               style={{
                 fontFamily: 'Nunito_800ExtraBold',
                 fontSize: 9,
@@ -60,22 +64,31 @@ export function AppHeader() {
           </View>
         </View>
 
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Call Neobee International School"
-          onPress={() => Linking.openURL(`tel:+${contact.phone.replace(/\D/g, '')}`)}
-          style={({ pressed }) => ({
-            width: 42,
-            height: 42,
-            borderRadius: 21,
+        <View
+          style={{
+            flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: colors.hive,
-            opacity: pressed ? 0.85 : 1,
-          })}
+            gap: space.s2,
+          }}
         >
-          <Icon name="phone" size={18} color={colors.nectar} />
-        </Pressable>
+          <LoginMenu />
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Call Neobee International School"
+            onPress={() => Linking.openURL(`tel:+${contact.phone.replace(/\D/g, '')}`)}
+            style={({ pressed }) => ({
+              width: 44,
+              height: 44,
+              borderRadius: 22,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: colors.hive,
+              opacity: pressed ? 0.85 : 1,
+            })}
+          >
+            <Icon name="phone" size={18} color={colors.nectar} />
+          </Pressable>
+        </View>
       </View>
     </View>
   );

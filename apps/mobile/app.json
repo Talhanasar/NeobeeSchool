@@ -3,6 +3,12 @@
     "name": "Neobee International School",
     "slug": "neobee-school",
     "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#f5a81c",
+      "imageWidth": 449
+    },
     "version": "0.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -23,6 +29,9 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#f5a81c"
       }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
     },
     "extra": {
       "router": {},

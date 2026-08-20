@@ -1,4 +1,12 @@
-import { ScrollView, View, Pressable, Linking, Text } from 'react-native';
+import {
+  ScrollView,
+  View,
+  Pressable,
+  Linking,
+  Text,
+  Image,
+  type ViewStyle,
+} from 'react-native';
 import { colors, space, text } from '@/theme/tokens';
 import { fontFamily } from '@/theme/typography';
 import {
@@ -9,6 +17,7 @@ import {
   Icon,
 } from '@/components';
 import { facilities, safety, teachers, contact } from '@/lib/content';
+import { photos } from '@/lib/photos';
 
 export default function CampusScreen() {
   return (
@@ -27,6 +36,53 @@ export default function CampusScreen() {
           title="Made for small people and big imaginations"
           subtitle="The proposed campus experience is calm, colorful, child-sized, and designed to keep care visible at every step."
         />
+        <View style={{ gap: space.s3 }}>
+          {([
+            { key: 'campusSoftPlay' as const, label: 'Indoor soft play' },
+            { key: 'campusClassroom' as const, label: 'Classrooms' },
+            { key: 'campusReading' as const, label: 'Reading corner' },
+            { key: 'campusGarden' as const, label: 'Garden' },
+          ]).map((item) => {
+            const photo = photos[item.key];
+            return (
+              <Card key={item.key} tone="white" elevated style={{ overflow: 'hidden' }}>
+                <View style={{ position: 'relative' }}>
+                  <Image
+                    source={photo.source}
+                    accessibilityLabel={photo.alt}
+                    style={{
+                      width: '100%',
+                      height: 300,
+                    }}
+                    resizeMode="cover"
+                  />
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      paddingVertical: space.s3,
+                      paddingHorizontal: space.s4,
+                      experimental_backgroundImage:
+                        'linear-gradient(to top, rgba(42, 31, 12, 0.72), rgba(42, 31, 12, 0))',
+                    } as ViewStyle}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: 'Nunito_700Bold',
+                        fontSize: text.base,
+                        color: colors.white,
+                      }}
+                    >
+                      {item.label}
+                    </Text>
+                  </View>
+                </View>
+              </Card>
+            );
+          })}
+        </View>
         <View style={{ gap: space.s4 }}>
           {facilities.map((item) => (
             <InfoRow

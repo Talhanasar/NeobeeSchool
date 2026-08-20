@@ -1,4 +1,6 @@
 import { View, Text } from 'react-native';
+import { Image } from 'react-native';
+import type { ImageSourcePropType } from 'react-native';
 import { colors, space, text } from '@/theme/tokens';
 import { fontFamily } from '@/theme/typography';
 import { dailyRhythm } from '@/lib/content';
@@ -8,9 +10,10 @@ type RhythmItem = (typeof dailyRhythm)[number];
 type TimelineRowProps = {
   readonly item: RhythmItem;
   readonly isLast: boolean;
+  readonly image?: ImageSourcePropType;
 };
 
-export function TimelineRow({ item, isLast }: TimelineRowProps) {
+export function TimelineRow({ item, isLast, image }: TimelineRowProps) {
   return (
     <View style={{ flexDirection: 'row', gap: space.s4, paddingVertical: space.s3 }}>
       <View style={{ width: 56, alignItems: 'center', gap: space.s1 }}>
@@ -36,25 +39,43 @@ export function TimelineRow({ item, isLast }: TimelineRowProps) {
       </View>
 
       <View style={{ flex: 1, gap: space.s1, paddingBottom: isLast ? 0 : space.s4 }}>
-        <Text
-          style={{
-            color: colors.hive,
-            fontFamily: 'Nunito_700Bold',
-            fontSize: text.base,
-          }}
-        >
-          {item.title}
-        </Text>
-        <Text
-          style={{
-            color: colors.hiveSoft,
-            fontFamily: fontFamily.body,
-            fontSize: text.sm,
-            lineHeight: text.sm * 1.6,
-          }}
-        >
-          {item.text}
-        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.s3 }}>
+          {image ? (
+            <Image
+              source={image}
+              accessibilityLabel={item.title}
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 24,
+                borderWidth: 2,
+                borderColor: colors.nectar,
+              }}
+              resizeMode="cover"
+            />
+          ) : null}
+          <View style={{ flex: 1 }}>
+            <Text
+              style={{
+                color: colors.hive,
+                fontFamily: 'Nunito_700Bold',
+                fontSize: text.base,
+              }}
+            >
+              {item.title}
+            </Text>
+            <Text
+              style={{
+                color: colors.hiveSoft,
+                fontFamily: fontFamily.body,
+                fontSize: text.sm,
+                lineHeight: text.sm * 1.6,
+              }}
+            >
+              {item.text}
+            </Text>
+          </View>
+        </View>
       </View>
     </View>
   );

@@ -8,14 +8,17 @@ import {
 import { colors, space, text } from '@/theme/tokens';
 import { fontFamily } from '@/theme/typography';
 import {
+  Button,
+  Card,
   SectionHeading,
   NoticeCard,
   InquiryForm,
 } from '@/components';
-import { admissionSteps, notices } from '@/lib/content';
+import { admissions, admissionSteps, classes, notices } from '@/lib/content';
 
 export default function AdmissionsScreen() {
   const scrollRef = useRef<ScrollView>(null);
+  const inquiryY = useRef(0);
 
   return (
     <KeyboardAvoidingView
@@ -33,6 +36,36 @@ export default function AdmissionsScreen() {
         }}
         keyboardShouldPersistTaps="handled"
       >
+        <Card tone="white" style={{ padding: space.s5, gap: space.s3, backgroundColor: colors.nectarSoft }}>
+          <Text style={{ color: colors.honeyDeep, fontFamily: 'Nunito_800ExtraBold', fontSize: text.xs, letterSpacing: 2, textTransform: 'uppercase' }}>
+            {admissions.statusLabel}
+          </Text>
+          <Text style={{ color: colors.hive, fontFamily: fontFamily.heading, fontSize: text.xxl, lineHeight: text.xxl * 1.14 }}>
+            {admissions.headline}
+          </Text>
+          <Text style={{ color: colors.hiveSoft, fontFamily: fontFamily.body, fontSize: text.base, lineHeight: text.base * 1.6 }}>
+            {admissions.lead}
+          </Text>
+          <Button label={admissions.ctaLabel} onPress={() => scrollRef.current?.scrollTo({ y: Math.max(0, inquiryY.current - 24), animated: true })} />
+        </Card>
+
+        <View style={{ gap: space.s3 }}>
+          <SectionHeading eyebrow="Find the right class" title="A class for every age" subtitle="Four levels move at the pace your child is ready for." />
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.s2 }}>
+            {classes.map((item) => (
+              <View key={item.name} style={{ flexDirection: 'row', alignItems: 'center', gap: space.s2, backgroundColor: colors.white, borderRadius: 999, paddingVertical: space.s2, paddingHorizontal: space.s4, borderWidth: 1, borderColor: colors.border }}>
+                <Text style={{ color: colors.honeyDeep, fontFamily: 'Nunito_800ExtraBold', fontSize: text.xs, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                  {item.age}
+                </Text>
+                <Text style={{ color: colors.hiveSoft, fontSize: text.xs }}>·</Text>
+                <Text style={{ color: colors.hive, fontFamily: fontFamily.body, fontSize: text.sm }}>
+                  {item.name}
+                </Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
         <View style={{ gap: space.s5 }}>
           <SectionHeading
             eyebrow="Admissions"
@@ -109,7 +142,9 @@ export default function AdmissionsScreen() {
           </View>
         </View>
 
-        <InquiryForm scrollRef={scrollRef} />
+        <View onLayout={(e) => { inquiryY.current = e.nativeEvent.layout.y; }}>
+          <InquiryForm scrollRef={scrollRef} />
+        </View>
 
         <View style={{ gap: space.s5 }}>
           <SectionHeading

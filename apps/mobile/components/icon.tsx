@@ -3,7 +3,20 @@ import type { ColorValue } from 'react-native';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 import type { IconName as ContentIconName } from '@/lib/content';
 
-export type IconName = ContentIconName | 'home' | 'classes' | 'campus' | 'admissions' | 'chat';
+export type IconName =
+  | ContentIconName
+  | 'home'
+  | 'classes'
+  | 'campus'
+  | 'admissions'
+  | 'chat'
+  | 'diary'
+  | 'invoice'
+  | 'growth'
+  | 'back'
+  | 'portal'
+  | 'teacher'
+  | 'logout';
 
 type IconProps = {
   readonly name: IconName;
@@ -127,6 +140,51 @@ const paths: Record<IconName, ReactNode> = {
     </>
   ),
   chat: <Path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />,
+  diary: (
+    <>
+      <Path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4a2 2 0 0 0-2-2H6.5A2.5 2.5 0 0 0 4 4.5v15Z" />
+      <Path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5" />
+      <Path d="M9 7h6M9 11h4" />
+    </>
+  ),
+  invoice: (
+    <>
+      <Path d="M4 2v20l3-2 3 2 3-2 3 2 3-2 3 2V2l-3 2-3-2-3 2-3-2-3 2-3-2Z" />
+      <Path d="M8 8h8M8 12h8M8 16h4" />
+    </>
+  ),
+  growth: (
+    <>
+      <Path d="m3 17 6-6 4 4 8-8" />
+      <Path d="M17 7h4v4" />
+    </>
+  ),
+  back: (
+    <>
+      <Path d="M19 12H5m7 7-7-7 7-7" />
+    </>
+  ),
+  portal: (
+    <>
+      <Rect x="3" y="3" width="7" height="7" rx="1.5" />
+      <Rect x="14" y="3" width="7" height="7" rx="1.5" />
+      <Rect x="3" y="14" width="7" height="7" rx="1.5" />
+      <Rect x="14" y="14" width="7" height="7" rx="1.5" />
+    </>
+  ),
+  teacher: (
+    <>
+      <Circle cx="12" cy="7" r="3.2" />
+      <Path d="M5 20c.5-4.2 3.2-6.5 7-6.5s6.5 2.3 7 6.5" />
+      <Path d="M16 4.5l1.5 1.5M19 7l1 1" />
+    </>
+  ),
+  logout: (
+    <>
+      <Path d="M10 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h5" />
+      <Path d="M16 8l4 4-4 4m-8-4h12" />
+    </>
+  ),
 };
 
 export function Icon({ name, size = 24, color = 'currentColor' }: IconProps) {

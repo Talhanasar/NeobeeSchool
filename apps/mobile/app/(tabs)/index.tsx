@@ -1,13 +1,14 @@
-import { ScrollView, Text, View, Linking, type ViewStyle } from 'react-native';
+import { ScrollView, Text, View, Pressable, Linking, type ViewStyle } from 'react-native';
 import { useRouter } from 'expo-router';
 import { colors, radius, shadows, space, text } from '@/theme/tokens';
 import { fontFamily } from '@/theme/typography';
 import {
-  AlertBanner,
+  AdmissionsBanner,
   BrandMark,
   Button,
   Card,
   ClassStory,
+  Icon,
   NoticeCard,
   QuickActions,
   SectionHeading,
@@ -16,6 +17,7 @@ import {
   type QuickAction,
 } from '@/components';
 import { classes, contact, dailyRhythm, notices, stats } from '@/lib/content';
+import { photos } from '@/lib/photos';
 
 const heroGradient: ViewStyle = {
   experimental_backgroundImage: `linear-gradient(150deg, ${colors.hive} 0%, ${colors.hive2} 100%)`,
@@ -57,7 +59,7 @@ export default function HomeScreen() {
         gap: space.s6,
       }}
     >
-      <AlertBanner label="Founding session · Nov 2026 · Limited seats in every class" />
+      <AdmissionsBanner onPress={() => router.push('/admissions')} />
 
       <View
         style={{
@@ -129,6 +131,59 @@ export default function HomeScreen() {
 
       <QuickActions actions={actions} />
 
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Open Parent Portal"
+        onPress={() => router.push('/portal/login')}
+        style={({ pressed }) => ({
+          backgroundColor: colors.white,
+          borderRadius: radius,
+          borderCurve: 'continuous',
+          padding: space.s5,
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: space.s4,
+          borderWidth: 1,
+          borderColor: colors.border,
+          boxShadow: shadows.shadow,
+          opacity: pressed ? 0.9 : 1,
+        })}
+      >
+        <View
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            backgroundColor: colors.nectarSoft,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Icon name="portal" size={24} color={colors.honeyDeep} />
+        </View>
+        <View style={{ flex: 1, gap: 2 }}>
+          <Text
+            style={{
+              fontFamily: fontFamily.heading,
+              fontSize: text.base,
+              color: colors.hive,
+            }}
+          >
+            Parent Portal
+          </Text>
+          <Text
+            style={{
+              fontFamily: fontFamily.body,
+              fontSize: text.xs,
+              color: colors.hiveSoft,
+            }}
+          >
+            View your child&apos;s day, attendance & diary
+          </Text>
+        </View>
+        <Icon name="arrow" size={20} color={colors.honeyDeep} />
+      </Pressable>
+
       <SectionHeading eyebrow="Four classes" title="Find your child's class" />
       <ScrollView
         horizontal
@@ -146,6 +201,7 @@ export default function HomeScreen() {
             name={item.name}
             age={item.age}
             tone={item.color}
+            image={photos[item.photoKey].source}
             onPress={() => router.push('/classes')}
           />
         ))}
@@ -169,6 +225,7 @@ export default function HomeScreen() {
               key={item.time}
               item={item}
               isLast={index === dailyRhythm.length - 1}
+              image={'photoKey' in item ? photos[item.photoKey].source : undefined}
             />
           ))}
         </Card>

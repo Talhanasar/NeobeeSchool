@@ -23,6 +23,7 @@ export function QuickActions({ actions }: QuickActionsProps) {
           onPress={action.onPress}
           style={({ pressed }) => ({
             flex: 1,
+            minHeight: 44,
             alignItems: 'center',
             gap: space.s2,
             paddingVertical: space.s4,

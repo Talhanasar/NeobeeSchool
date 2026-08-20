@@ -210,162 +210,180 @@ export function InquiryForm({ scrollRef }: InquiryFormProps) {
         </Text>
       </View>
 
-      <View style={{ gap: space.s4 }}>
-        <View onLayout={handleLayout('parentName')}>
-          <Field
-            ref={parentNameRef}
-            label="Parent or guardian’s name"
-            value={values.parentName}
-            onChangeText={(parentName) => {
-              setValues((v) => ({ ...v, parentName }));
-              if (errors.parentName) {
-                setErrors((e) => ({ ...e, parentName: undefined }));
-              }
-            }}
-            error={errors.parentName}
-            required
-            autoCapitalize="words"
-            autoComplete="name"
-            returnKeyType="next"
-            editable={!isSubmitting}
-          />
-        </View>
-
-        <View onLayout={handleLayout('phone')}>
-          <Field
-            ref={phoneRef}
-            label="Phone or WhatsApp"
-            value={values.phone}
-            onChangeText={(phone) => {
-              setValues((v) => ({ ...v, phone }));
-              if (errors.phone) {
-                setErrors((e) => ({ ...e, phone: undefined }));
-              }
-            }}
-            placeholder="+880 1X XXXX XXXX"
-            error={errors.phone}
-            required
-            keyboardType="phone-pad"
-            autoComplete="tel"
-            returnKeyType="next"
-            editable={!isSubmitting}
-          />
-        </View>
-
-        <View onLayout={handleLayout('childName')}>
-          <Field
-            ref={childNameRef}
-            label="Child’s name"
-            value={values.childName}
-            onChangeText={(childName) => {
-              setValues((v) => ({ ...v, childName }));
-              if (errors.childName) {
-                setErrors((e) => ({ ...e, childName: undefined }));
-              }
-            }}
-            error={errors.childName}
-            required
-            autoCapitalize="words"
-            autoComplete="off"
-            returnKeyType="next"
-            editable={!isSubmitting}
-          />
-        </View>
-
-        <View onLayout={handleLayout('classLevel')} style={{ gap: space.s2 }}>
-          <Text
-            style={{
-              color: colors.hiveSoft,
-              fontFamily: 'Nunito_800ExtraBold',
-              fontSize: text.xs,
-              letterSpacing: 0.7,
-              textTransform: 'uppercase',
-            }}
-          >
-            Class by age
-            <Text style={{ color: colors.danger }}> *</Text>
-          </Text>
-          <View accessibilityRole="radiogroup" style={{ gap: space.s2 }}>
-            {classOptions.map((option) => {
-              const selected = values.classLevel === option.value;
-              return (
-                <Pressable
-                  key={option.value}
-                  accessibilityRole="radio"
-                  accessibilityState={{ selected }}
-                  accessibilityLabel={option.label}
-                  disabled={isSubmitting}
-                  onPress={() => {
-                    setValues((v) => ({ ...v, classLevel: option.value }));
-                    if (errors.classLevel) {
-                      setErrors((e) => ({ ...e, classLevel: undefined }));
-                    }
-                  }}
-                  style={({ pressed }) => ({
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: space.s3,
-                    paddingVertical: space.s3,
-                    paddingHorizontal: space.s3,
-                    minHeight: 48,
-                    borderRadius: 11,
-                    borderWidth: 2,
-                    borderColor: selected
-                      ? colors.honey
-                      : 'rgba(83, 61, 19, 0.16)',
-                    backgroundColor: selected ? colors.nectarSoft : colors.cream,
-                    opacity: isSubmitting ? 0.55 : pressed ? 0.85 : 1,
-                  })}
-                >
-                  <View
-                    style={{
-                      width: 22,
-                      height: 22,
-                      borderRadius: 11,
-                      borderWidth: 2,
-                      borderColor: selected ? colors.honey : colors.hiveSoft,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    {selected ? (
-                      <View
-                        style={{
-                          width: 11,
-                          height: 11,
-                          borderRadius: 6,
-                          backgroundColor: colors.honey,
-                        }}
-                      />
-                    ) : null}
-                  </View>
-                  <Text
-                    style={{
-                      flex: 1,
-                      color: colors.hive,
-                      fontFamily: 'Nunito_600SemiBold',
-                      fontSize: text.base,
-                    }}
-                  >
-                    {option.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
+      <View style={{ gap: space.s5 }}>
+        <View
+          style={{
+            backgroundColor: colors.sky,
+            borderRadius: 16,
+            padding: space.s4,
+            gap: space.s4,
+          }}
+        >
+          <View onLayout={handleLayout('parentName')}>
+            <Field
+              ref={parentNameRef}
+              label="Parent or guardian’s name"
+              value={values.parentName}
+              onChangeText={(parentName) => {
+                setValues((v) => ({ ...v, parentName }));
+                if (errors.parentName) {
+                  setErrors((e) => ({ ...e, parentName: undefined }));
+                }
+              }}
+              error={errors.parentName}
+              required
+              autoCapitalize="words"
+              autoComplete="name"
+              returnKeyType="next"
+              editable={!isSubmitting}
+            />
           </View>
-          {errors.classLevel ? (
+
+          <View onLayout={handleLayout('phone')}>
+            <Field
+              ref={phoneRef}
+              label="Phone or WhatsApp"
+              value={values.phone}
+              onChangeText={(phone) => {
+                setValues((v) => ({ ...v, phone }));
+                if (errors.phone) {
+                  setErrors((e) => ({ ...e, phone: undefined }));
+                }
+              }}
+              placeholder="+880 1X XXXX XXXX"
+              error={errors.phone}
+              required
+              keyboardType="phone-pad"
+              autoComplete="tel"
+              returnKeyType="next"
+              editable={!isSubmitting}
+            />
+          </View>
+        </View>
+
+        <View
+          style={{
+            backgroundColor: colors.sky,
+            borderRadius: 16,
+            padding: space.s4,
+            gap: space.s4,
+          }}
+        >
+          <View onLayout={handleLayout('childName')}>
+            <Field
+              ref={childNameRef}
+              label="Child’s name"
+              value={values.childName}
+              onChangeText={(childName) => {
+                setValues((v) => ({ ...v, childName }));
+                if (errors.childName) {
+                  setErrors((e) => ({ ...e, childName: undefined }));
+                }
+              }}
+              error={errors.childName}
+              required
+              autoCapitalize="words"
+              autoComplete="off"
+              returnKeyType="next"
+              editable={!isSubmitting}
+            />
+          </View>
+
+          <View onLayout={handleLayout('classLevel')} style={{ gap: space.s2 }}>
             <Text
-              accessibilityLiveRegion="polite"
               style={{
-                color: colors.danger,
-                fontFamily: 'Nunito_700Bold',
+                color: colors.hiveSoft,
+                fontFamily: 'Nunito_800ExtraBold',
                 fontSize: text.xs,
-                lineHeight: text.xs * 1.35,
+                letterSpacing: 0.7,
+                textTransform: 'uppercase',
               }}
             >
-              {errors.classLevel}
+              Class by age
+              <Text style={{ color: colors.danger }}> *</Text>
             </Text>
-          ) : null}
+            <View accessibilityRole="radiogroup" style={{ gap: space.s3 }}>
+              {classOptions.map((option) => {
+                const selected = values.classLevel === option.value;
+                return (
+                  <Pressable
+                    key={option.value}
+                    accessibilityRole="radio"
+                    accessibilityState={{ selected }}
+                    accessibilityLabel={option.label}
+                    disabled={isSubmitting}
+                    onPress={() => {
+                      setValues((v) => ({ ...v, classLevel: option.value }));
+                      if (errors.classLevel) {
+                        setErrors((e) => ({ ...e, classLevel: undefined }));
+                      }
+                    }}
+                    style={({ pressed }) => ({
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: space.s3,
+                      paddingVertical: space.s3,
+                      paddingHorizontal: space.s3,
+                      minHeight: 48,
+                      borderRadius: 11,
+                      borderWidth: 2,
+                      borderColor: selected
+                        ? colors.honey
+                        : 'rgba(83, 61, 19, 0.16)',
+                      backgroundColor: selected ? colors.nectarSoft : colors.cream,
+                      opacity: isSubmitting ? 0.55 : pressed ? 0.85 : 1,
+                    })}
+                  >
+                    <View
+                      style={{
+                        width: 22,
+                        height: 22,
+                        borderRadius: 11,
+                        borderWidth: 2,
+                        borderColor: selected ? colors.honey : colors.hiveSoft,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      {selected ? (
+                        <View
+                          style={{
+                            width: 11,
+                            height: 11,
+                            borderRadius: 6,
+                            backgroundColor: colors.honey,
+                          }}
+                        />
+                      ) : null}
+                    </View>
+                    <Text
+                      style={{
+                        flex: 1,
+                        color: colors.hive,
+                        fontFamily: 'Nunito_600SemiBold',
+                        fontSize: text.base,
+                      }}
+                    >
+                      {option.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+            {errors.classLevel ? (
+              <Text
+                accessibilityLiveRegion="polite"
+                style={{
+                  color: colors.danger,
+                  fontFamily: 'Nunito_700Bold',
+                  fontSize: text.xs,
+                  lineHeight: text.xs * 1.35,
+                }}
+              >
+                {errors.classLevel}
+              </Text>
+            ) : null}
+          </View>
         </View>
 
         <Field
@@ -380,12 +398,14 @@ export function InquiryForm({ scrollRef }: InquiryFormProps) {
         />
       </View>
 
-      <Button
-        label="Send demo inquiry"
-        onPress={handleSubmit}
-        loading={isSubmitting}
-        disabled={isSubmitting}
-      />
+      <View style={{ marginTop: space.s1 }}>
+        <Button
+          label="Send inquiry"
+          onPress={handleSubmit}
+          loading={isSubmitting}
+          disabled={isSubmitting}
+        />
+      </View>
     </Card>
   );
 }

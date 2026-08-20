@@ -20,6 +20,8 @@ export type IconName =
   | 'arrow'
   | 'check';
 
+import type { PhotoKey } from './photos';
+
 type ClassItem = {
   readonly name: string;
   readonly age: string;
@@ -27,6 +29,7 @@ type ClassItem = {
   readonly description: string;
   readonly skills: readonly string[];
   readonly color: 'gold' | 'green' | 'blue' | 'rose';
+  readonly photoKey: PhotoKey;
 };
 
 export const classes: readonly ClassItem[] = [
@@ -38,6 +41,7 @@ export const classes: readonly ClassItem[] = [
       'Nurturing routines, sensory discovery, language-rich play, and patient settling-in support.',
     skills: ['Sensory play', 'Songs & rhymes', 'Colors & shapes', 'Daily dua'],
     color: 'gold',
+    photoKey: 'babyBees',
   },
   {
     name: 'Explorer Bees',
@@ -47,6 +51,7 @@ export const classes: readonly ClassItem[] = [
       'First letters, numbers, creative play, and small experiments that make discovery feel joyful.',
     skills: ['Letters A–Z', 'Counting 1–10', 'Bangla Bornomala', 'Creative play'],
     color: 'green',
+    photoKey: 'explorerBees',
   },
   {
     name: 'Bumble Bees',
@@ -56,6 +61,7 @@ export const classes: readonly ClassItem[] = [
       'Phonics, pencil control, early maths, and storytelling taught through active, purposeful play.',
     skills: ['Early phonics', 'Numbers 1–20', 'Writing readiness', 'Storytelling'],
     color: 'blue',
+    photoKey: 'bumbleBees',
   },
   {
     name: 'Honey Bees',
@@ -65,6 +71,7 @@ export const classes: readonly ClassItem[] = [
       'Reading, sentence building, practical maths, and weekly sharing to prepare children for Grade 1.',
     skills: ['Early reading', 'Sentence building', 'Maths to 20', 'Show & tell'],
     color: 'rose',
+    photoKey: 'honeyBees',
   },
 ] as const;
 
@@ -96,16 +103,19 @@ export const dailyRhythm = [
     time: '8:30',
     title: 'Warm welcome',
     text: 'Free play and a gentle transition into the school day.',
+    photoKey: 'dayWelcome' as PhotoKey,
   },
   {
     time: '9:00',
     title: 'Circle & dua',
-    text: 'Songs, greetings, a short dua, and today’s theme.',
+    text: 'Songs, greetings, a short dua, and today\u2019s theme.',
+    photoKey: 'dayCircle' as PhotoKey,
   },
   {
     time: '9:25',
     title: 'Purposeful play',
     text: 'Hands-on English, Bangla, maths, and discovery activities.',
+    photoKey: 'dayPlay' as PhotoKey,
   },
   {
     time: '10:15',
@@ -121,6 +131,7 @@ export const dailyRhythm = [
     time: '11:30',
     title: 'Home-time connection',
     text: 'Closing circle and a diary note to take home.',
+    photoKey: 'dayHome' as PhotoKey,
   },
 ] as const;
 
@@ -236,3 +247,11 @@ export const admissionSteps = [
     text: 'Receive confirmed schedules, documents, book information, and settling-in guidance.',
   },
 ] as const;
+
+export const admissions = {
+  statusLabel: 'Admissions open',
+  session: '2026–27 founding session',
+  headline: 'Now enrolling for 2026–27',
+  lead: 'A warm, play-based preschool in Panchlaish. Small class groups — limited seats in every level.',
+  ctaLabel: 'Start your inquiry',
+} as const;
