@@ -1,33 +1,44 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { navLinks } from "./site-config";
 
-const links = [
-  ["Classes", "#classes"],
-  ["A day here", "#day"],
-  ["Campus", "#campus"],
-  ["Admissions", "#admissions"],
-  ["Contact", "#contact"],
-] as const;
+function isActive(pathname: string, href: string): boolean {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <header className="site-header">
       <div className="container nav-shell">
-        <a className="brand" href="#main-content" aria-label="Neobee Preschool home">
+        <Link className="brand" href="/" aria-label="Neobee Preschool home">
           <span className="brand-mark" aria-hidden="true"><BeeIcon /></span>
           <span className="brand-copy"><strong>Neobee Preschool</strong><small>part of Neobee International School</small></span>
-        </a>
+        </Link>
         <button className="menu-button" type="button" aria-expanded={open} aria-controls="site-navigation" onClick={() => setOpen((value) => !value)}>
           <span className="sr-only">{open ? "Close navigation" : "Open navigation"}</span>
           <span aria-hidden="true" className={open ? "menu-lines is-open" : "menu-lines"}><i /><i /><i /></span>
         </button>
         <nav id="site-navigation" className={open ? "site-nav is-open" : "site-nav"} aria-label="Main navigation">
-          {links.map(([label, href]) => <a key={href} href={href} onClick={() => setOpen(false)}>{label}</a>)}
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={isActive(pathname, link.href) ? "is-active" : undefined}
+              aria-current={isActive(pathname, link.href) ? "page" : undefined}
+              onClick={() => setOpen(false)}
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
-        <a className="button button-primary nav-cta" href="#admissions">Enquire now</a>
+        <Link className="button button-primary nav-cta" href="/admissions/apply">Apply Now</Link>
       </div>
     </header>
   );
