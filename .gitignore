@@ -46,6 +46,9 @@ qa-screenshots/
 .zcode/
 HERO_REDESIGN_STATUS.md
 
+# Agent tooling
+.claude/
+
 # Design reference material (not imported by app code)
 reference/
 # graph tooling output
