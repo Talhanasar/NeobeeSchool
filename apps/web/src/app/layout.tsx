@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
+import { MotionProvider } from "./motion-provider";
 import { SITE_URL } from "./site-config";
 import { SchoolJsonLd } from "./structured-data";
 
@@ -52,7 +53,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     <html lang="en">
       <body>
         <SchoolJsonLd />
-        {children}
+        <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
   );

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import { navLinks } from "./site-config";
 
 function isActive(pathname: string, href: string): boolean {
@@ -10,37 +11,165 @@ function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+// Drawer motion. Exit is faster than enter so dismissal feels immediate.
+// MotionConfig reducedMotion="user" (root layout) drops the y-transform for users
+// who ask for reduced motion and keeps the opacity fade.
+const drawerVariants = {
+  closed: { opacity: 0, y: -8, transition: { duration: 0.16, ease: [0.4, 0, 1, 1] as const } },
+  open: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.22, ease: [0, 0, 0.2, 1] as const, staggerChildren: 0.04, delayChildren: 0.06 },
+  },
+};
+
+const itemVariants = {
+  closed: { opacity: 0, y: -4 },
+  open: { opacity: 1, y: 0 },
+};
+
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const drawerRef = useRef<HTMLElement | null>(null);
+  const toggleRef = useRef<HTMLButtonElement | null>(null);
+
+  const close = useCallback(() => setOpen(false), []);
+
+  // Escape to close, and keep Tab inside the drawer while it is open.
+  useEffect(() => {
+    if (!open) return;
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        close();
+        toggleRef.current?.focus();
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const focusable = drawerRef.current?.querySelectorAll<HTMLElement>("a[href], button:not([disabled])");
+      if (!focusable || focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+
+      // The toggle sits outside the drawer, so wrap against it in both directions.
+      if (event.shiftKey && (active === first || active === toggleRef.current)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        toggleRef.current?.focus();
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open, close]);
+
+  // Scroll lock. Restores the previous value rather than assuming it was "".
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [open]);
 
   return (
-    <header className="site-header">
-      <div className="container nav-shell">
-        <Link className="brand" href="/" aria-label="Neobee Preschool home">
-          <span className="brand-mark" aria-hidden="true"><BeeIcon /></span>
-          <span className="brand-copy"><strong>Neobee Preschool</strong><small>part of Neobee International School</small></span>
-        </Link>
-        <button className="menu-button" type="button" aria-expanded={open} aria-controls="site-navigation" onClick={() => setOpen((value) => !value)}>
-          <span className="sr-only">{open ? "Close navigation" : "Open navigation"}</span>
-          <span aria-hidden="true" className={open ? "menu-lines is-open" : "menu-lines"}><i /><i /><i /></span>
-        </button>
-        <nav id="site-navigation" className={open ? "site-nav is-open" : "site-nav"} aria-label="Main navigation">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={isActive(pathname, link.href) ? "is-active" : undefined}
-              aria-current={isActive(pathname, link.href) ? "page" : undefined}
-              onClick={() => setOpen(false)}
+    <>
+      {/* The scrim is a sibling of <header>, not a child. .site-header sets
+          backdrop-filter, which creates a containing block AND a stacking context —
+          a scrim nested inside it would resolve `inset: 0` against the header box and
+          paint over the header's own background, dimming the brand and close button. */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="nav-scrim"
+            onClick={close}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+          />
+        )}
+      </AnimatePresence>
+
+      <header className="site-header">
+        <div className="container nav-shell">
+          <Link className="brand" href="/" aria-label="Neobee Preschool home">
+            <span className="brand-mark" aria-hidden="true"><BeeIcon /></span>
+            <span className="brand-copy"><strong>Neobee Preschool</strong><small>part of Neobee International School</small></span>
+          </Link>
+
+          <nav className="site-nav" aria-label="Main navigation">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={isActive(pathname, link.href) ? "is-active" : undefined}
+                aria-current={isActive(pathname, link.href) ? "page" : undefined}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <Link className="button button-primary nav-cta" href="/admissions/apply">Apply Now</Link>
+
+          <button
+            ref={toggleRef}
+            className="menu-button"
+            type="button"
+            aria-expanded={open}
+            aria-controls="site-drawer"
+            onClick={() => setOpen((value) => !value)}
+          >
+            <span className="sr-only">{open ? "Close navigation" : "Open navigation"}</span>
+            <span aria-hidden="true" className={open ? "menu-lines is-open" : "menu-lines"}><i /><i /><i /></span>
+          </button>
+        </div>
+
+        <AnimatePresence>
+          {open && (
+            <motion.nav
+              ref={drawerRef}
+              id="site-drawer"
+              className="site-drawer"
+              aria-label="Main navigation"
+              aria-modal="true"
+              role="dialog"
+              variants={drawerVariants}
+              initial="closed"
+              animate="open"
+              exit="closed"
             >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        <Link className="button button-primary nav-cta" href="/admissions/apply">Apply Now</Link>
-      </div>
-    </header>
+              {navLinks.map((link) => (
+                <motion.div key={link.href} variants={itemVariants}>
+                  <Link
+                    href={link.href}
+                    className={isActive(pathname, link.href) ? "is-active" : undefined}
+                    aria-current={isActive(pathname, link.href) ? "page" : undefined}
+                    onClick={close}
+                  >
+                    {link.label}
+                  </Link>
+                </motion.div>
+              ))}
+              <motion.div variants={itemVariants} className="site-drawer-cta">
+                <Link className="button button-primary" href="/admissions/apply" onClick={close}>
+                  Apply Now
+                </Link>
+              </motion.div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
+      </header>
+    </>
   );
 }
 
