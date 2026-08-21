@@ -31,6 +31,30 @@
   --sky-deep: #cfe6f0; /* deeper tint of --sky for decorative KPI hex blobs */
   --nectar-soft: #fff4d6; /* softer tint of --nectar for diary-note surfaces */
 
+  /* ========== Accent, split by surface polarity ==========
+     One accent value cannot serve both polarities: #c97800 is 4.75:1 on --hive
+     (passes) but 3.27:1 on --cream, 3.14:1 on --cream-2 and 3.40:1 on --white
+     (all fail 4.5:1). Pick the token that matches the surface the text sits on.
+     --honey is a fill only: 1.92:1 on --cream. Never text-on-light, never a border. */
+  --accent-on-light: #9a5a00;  /* 5.26 cream · 5.04 cream-2 · 5.47 white */
+  --accent-on-dark: #c97800;   /* 4.75 on --hive */
+
+  /* Ink */
+  --ink-muted: var(--hive-soft);      /* 6.76 cream · 7.03 white */
+  --ink-muted-on-dark: #a08659;       /* 4.65 on --hive; replaces #8a734a at 3.56 */
+  --ink-placeholder: #7a6a48;         /* 5.07 on --cream */
+
+  /* ========== Borders, split by duty ==========
+     rgba(83,61,19,.13) is 1.25:1 — fine for a decorative divider, far short of the
+     3:1 a control boundary needs. Alpha cannot fix it: .30-.55 all miss 3:1, and the
+     first passing value (.56) no longer reads as a hairline. Interactive = solid. */
+  --border-subtle: rgba(83, 61, 19, 0.13);  /* decorative dividers; no 3:1 duty */
+  --border-strong: #8d8577;                 /* 3.65 white · 3.51 cream; inputs, focusable cards */
+
+  /* Focus ring: the only value clearing 3:1 on all four surfaces
+     (3.27 cream · 3.40 white · 3.14 cream-2 · 4.75 hive). Fails as text, valid as a ring. */
+  --focus-ring: #c97800;
+
   /* ========== Elevation System ========== */
   --shadow: 0 14px 38px rgba(104, 70, 8, 0.11);
   --shadow-lg: 0 28px 70px rgba(104, 70, 8, 0.17);
@@ -41,22 +65,38 @@
   --space-2: 0.5rem;    /* 8px */
   --space-3: 0.75rem;   /* 12px */
   --space-4: 1rem;      /* 16px */
+  --space-4-5: 1.25rem; /* 20px — the gap most stray values fell into */
   --space-5: 1.5rem;    /* 24px */
   --space-6: 2rem;      /* 32px */
   --space-7: 3rem;      /* 48px */
   --space-8: 4rem;      /* 64px */
   --space-9: 6rem;      /* 96px */
 
+  /* ========== Control Heights ==========
+     Deliberately NOT --space-*: a control height and a section margin are different
+     concerns that merely collide at 48px today. Fusing them would make Phase 3's
+     button sizes drag section spacing along with them. Floor is 44px (touch target). */
+  --control-h-sm: 44px;
+  --control-h-md: 48px;
+  --control-h-lg: 56px;
+
   /* ========== Typography Scale ========== */
-  --text-xs: 0.75rem;    /* 12px */
-  --text-sm: 0.875rem;   /* 14px */
-  --text-base: 1rem;     /* 16px */
-  --text-lg: 1.125rem;   /* 18px */
-  --text-xl: 1.25rem;    /* 20px */
-  --text-2xl: 1.5rem;    /* 24px */
-  --text-3xl: 2rem;      /* 32px */
-  --text-4xl: 3rem;      /* 48px */
-  --text-5xl: 4rem;      /* 64px */
+  --text-2xs: 0.6875rem; /* 11.7px — floor; nothing smaller ships as text */
+  --text-xs: 0.75rem;    /* 12.75px */
+  --text-sm: 0.875rem;   /* 14.9px */
+  --text-base: 1rem;     /* 17px */
+  --text-lg: 1.125rem;   /* 19.1px */
+  --text-xl: 1.25rem;    /* 21.25px */
+  --text-2xl: 1.5rem;    /* 25.5px */
+  --text-3xl: 2rem;      /* 34px */
+  --text-4xl: clamp(2.25rem, 5vw, 3rem);    /* page h1 */
+  --text-5xl: clamp(2.75rem, 7vw, 4rem);    /* hero h1 */
+
+  /* Line heights: tighter as size grows */
+  --leading-tight: 1.15;   /* display headings */
+  --leading-snug: 1.3;     /* card/section headings */
+  --leading-normal: 1.5;   /* UI text, leads */
+  --leading-relaxed: 1.65; /* body copy */
 
   /* ========== Animation Tokens ========== */
   --duration-fast: 150ms;
@@ -66,14 +106,37 @@
   --easing-decelerate: cubic-bezier(0, 0, 0.2, 1);
   --easing-accelerate: cubic-bezier(0.4, 0, 1, 1);
 
+  /* ========== Radius Scale ==========
+     20 distinct radii were in use. These six replace them; --radius stays as the
+     alias for --radius-xl so the 14 existing var(--radius) consumers keep working. */
+  --radius-xs: 4px;      /* menu bars, tiny indicators */
+  --radius-sm: 8px;      /* inline chips, focus-ring rounding */
+  --radius-md: 12px;     /* inputs, small controls, icon tiles */
+  --radius-lg: 16px;     /* nested panels, list rows */
+  --radius-xl: 24px;     /* cards, modals, drawers */
+  --radius-full: 999px;  /* pills, buttons, avatars */
+  --radius: var(--radius-xl); /* alias, retained for existing consumers */
+
   /* ========== Layout Tokens ========== */
-  --radius: 24px;
   --container: 1180px;
-  
+  --header-h: 76px;          /* .nav-shell, wide */
+  --header-h-compact: 70px;  /* .nav-shell, below the nav breakpoint */
+  --announce-h: 42px;        /* .announcement-inner, below the nav breakpoint */
+
+  /* ========== Z-index Scale ==========
+     Ordered deliberately: the drawer sits ABOVE its own scrim. The current
+     sidebar-45/scrim-40 pairing gets that right only by accident of source order. */
+  --z-base: 1;
+  --z-sticky: 50;
+  --z-scrim: 55;
+  --z-drawer: 60;
+  --z-toast: 80;
+  --z-skip: 999;
+
   /* Breakpoints (for reference in comments) */
   /* --breakpoint-sm: 560px */
   /* --breakpoint-md: 820px */
-  /* --breakpoint-lg: 1080px */
+  /* --breakpoint-lg: 1080px  — Phase 2 moves the nav breakpoint here */
 }
 
 * { box-sizing: border-box; }
