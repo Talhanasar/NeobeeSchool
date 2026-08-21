@@ -55,6 +55,10 @@
      (3.27 cream · 3.40 white · 3.14 cream-2 · 4.75 hive). Fails as text, valid as a ring. */
   --focus-ring: #c97800;
 
+  /* Two disabled rules already shipped at .6 (.field input, .portal-login-field
+     input). Tokenised at that value rather than a third literal. */
+  --disabled-opacity: 0.6;
+
   /* ========== Elevation System ========== */
   --shadow: 0 14px 38px rgba(104, 70, 8, 0.11);
   --shadow-lg: 0 28px 70px rgba(104, 70, 8, 0.17);
@@ -179,7 +183,6 @@ svg { display: block; }
 .site-nav a:hover::after { background: var(--honey); }
 .site-nav a.is-active { color: var(--hive); }
 .site-nav a.is-active::after { background: var(--accent-on-light); }
-.menu-button { display: none; width: var(--control-h-md); height: var(--control-h-md); margin-left: auto; border: 0; border-radius: var(--radius-md); background: transparent; color: var(--hive); cursor: pointer; }
 .menu-lines { display: grid; gap: 5px; width: 24px; margin: auto; }
 .menu-lines i { display: block; width: 100%; height: 2px; background: currentColor; border-radius: var(--radius-xs); transition: transform .2s, opacity .2s; }
 .menu-lines.is-open i:first-child { transform: translateY(7px) rotate(45deg); }
@@ -201,21 +204,39 @@ svg { display: block; }
 .site-drawer-cta { margin-top: var(--space-4); }
 .site-drawer-cta a { justify-content: center; }
 
-.button { min-height: var(--space-7); display: inline-flex; justify-content: center; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-5); border: 2px solid transparent; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: var(--text-sm); cursor: pointer; transition: transform var(--duration-normal) var(--easing-standard), background var(--duration-normal), color var(--duration-normal), border-color var(--duration-normal), box-shadow var(--duration-normal); }
-.button:hover { transform: translateY(-2px); }
+/* Button contract: .button owns geometry + states; variants own colour only;
+   sizes own height + padding + font-size. Nothing else may set a button's height. */
+.button { min-height: var(--control-h-md); display: inline-flex; justify-content: center; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-5); border: 2px solid transparent; border-radius: var(--radius-full); text-decoration: none; font-weight: 900; font-size: var(--text-sm); cursor: pointer; transition: transform var(--duration-normal) var(--easing-standard), background var(--duration-normal), color var(--duration-normal), border-color var(--duration-normal), box-shadow var(--duration-normal); }
+.button:hover:not(:disabled):not([aria-disabled="true"]) { transform: translateY(-2px); }
 .button:active { transform: translateY(0); box-shadow: none; }
+.button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
+.button:disabled, .button[aria-disabled="true"] { opacity: var(--disabled-opacity); cursor: not-allowed; transform: none; box-shadow: none; }
 .button-primary { background: var(--honey); color: var(--hive); box-shadow: 0 8px 20px rgba(197, 125, 0, .22); }
-.button-primary:hover { background: var(--honey-deep); color: var(--white); }
+.button-primary:hover:not(:disabled):not([aria-disabled="true"]) { background: var(--honey-deep); color: var(--white); }
 .button-primary:active { background: var(--honey-deep-hover); }
 .button-secondary { background: transparent; border-color: var(--hive); color: var(--hive); }
-.button-secondary:hover { background: var(--hive); color: var(--nectar); }
+.button-secondary:hover:not(:disabled):not([aria-disabled="true"]) { background: var(--hive); color: var(--nectar); }
 .button-secondary:active { background: var(--hive-hover); }
-.button-light { background: var(--white); color: var(--hive); }
-.button-light:hover { background: var(--nectar); }
-.button-light:active { background: var(--honey-light); }
+/* Transparent base for portal toggles/nav items, which fill via an `.is-on` state. */
+.button-ghost { background: transparent; border-color: transparent; color: inherit; }
+/* Ghost controls are toggles, nav items and icon buttons — they fill or tint in
+   place rather than lifting. Matches the base hover's specificity and follows it,
+   so it wins without an !important. */
+.button-ghost:hover:not(:disabled):not([aria-disabled="true"]) { transform: none; }
 .button-outline { background: transparent; border-color: currentColor; color: inherit; }
-.button-outline:hover { opacity: .85; }
+.button-outline:hover:not(:disabled):not([aria-disabled="true"]) { opacity: .85; }
+.button-sm { min-height: var(--control-h-sm); padding: var(--space-2) var(--space-4); font-size: var(--text-xs); }
+.button-lg { min-height: var(--control-h-lg); padding: var(--space-4) var(--space-6); font-size: var(--text-base); }
+/* Square icon-only control. */
+.button-icon { width: var(--control-h-md); padding: 0; gap: 0; }
+.button-icon.button-sm { width: var(--control-h-sm); }
 .nav-cta { padding-inline: var(--space-4); }
+
+/* Must sit AFTER .button in source order: same specificity, and `display: none`
+   has to win over the base's `display: inline-flex` now that this element also
+   carries the .button class. The media-query reveal below is later still. */
+/* Rounded square, matching .portal-menu-btn — overrides the base's pill radius. */
+.menu-button { display: none; margin-left: auto; border-radius: var(--radius-md); color: var(--hive); }
 
 .honeycomb-bg { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cpath d='M28 1 55 17v31L28 64 1 48V17Zm0 63 27 16v17H1V80Z' fill='none' stroke='%23D68A00' stroke-opacity='.08'/%3E%3C/svg%3E"); }
 .eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; color: var(--honey-deep); font-size: .75rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
@@ -389,7 +410,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 .field input:read-only, .field select:read-only, .field textarea:read-only { background: var(--cream-hover); border-style: dashed; }
 .field input[aria-invalid="true"], .field select[aria-invalid="true"] { border-color: var(--danger); }
 .field-error { margin: var(--space-2) 0 0; color: var(--danger); font-size: var(--text-xs); font-weight: 800; line-height: 1.35; }
-.form-submit { width: 100%; border: 0; }
+.form-submit { width: 100%; }
 .form-success { display: none; margin: 15px 0 0; padding: 12px 14px; border: 1px solid #a8caa5; border-radius: 11px; background: var(--leaf-soft); color: var(--success); font-size: .78rem; font-weight: 800; line-height: 1.45; }.form-success.is-visible { display: block; }
 
 .contact-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 45px; align-items: stretch; }
@@ -526,12 +547,11 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 }
 .portal-menu-btn {
   display: none;
-  width: 44px; height: 44px;
+  /* Rounded square, not the base's circle. */
   border: 1px solid rgba(245, 168, 28, .35);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   background: var(--hive-2);
   color: var(--nectar);
-  cursor: pointer;
 }
 .portal-menu-btn .icon { width: 22px; height: 22px; margin: auto; }
 .portal-demo-pill {
@@ -559,35 +579,18 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   border: 1px solid rgba(245, 168, 28, .18);
 }
 .portal-role-switcher button {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 8px 14px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
   color: #d9ccb0;
-  font-weight: 800;
+  /* Below --text-xs on purpose: three role labels must fit the topbar.
+     Revisit in the Phase 4 type-scale migration. */
   font-size: .76rem;
-  cursor: pointer;
-  transition: background .15s, color .15s;
 }
 .portal-role-switcher button:hover { background: var(--hive-2); color: var(--white); }
 .portal-role-switcher button.is-on { background: var(--honey); color: var(--hive); }
 .portal-role-switcher button .icon { width: 16px; height: 16px; }
 .portal-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 14px;
   border: 1px solid rgba(245, 168, 28, .35);
-  border-radius: 999px;
-  background: transparent;
   color: var(--nectar);
-  font-weight: 800;
   font-size: .75rem;
-  cursor: pointer;
-  text-decoration: none;
 }
 .portal-back:hover { background: var(--hive-2); color: var(--white); }
 .portal-back .icon { width: 16px; height: 16px; }
@@ -657,20 +660,15 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 }
 .portal-sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
 .portal-sidebar-nav button {
-  display: flex;
-  align-items: center;
+  /* A left-aligned nav row, not a centred pill: overrides the base's
+     justify-content and pill radius, and needs a wider gap for icon + label + pip. */
+  justify-content: flex-start;
   gap: 11px;
   width: 100%;
-  padding: 10px 14px;
-  border: 0;
-  border-radius: 11px;
-  background: transparent;
+  border-radius: var(--radius-md);
   color: #e4d3ac;
-  font-weight: 800;
   font-size: .82rem;
   text-align: left;
-  cursor: pointer;
-  transition: background .15s, color .15s;
 }
 .portal-sidebar-nav button:hover { background: var(--hive-2); color: var(--white); }
 .portal-sidebar-nav button.is-on { background: var(--honey); color: var(--hive); }
@@ -816,6 +814,9 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   font-size: .72rem;
   cursor: pointer;
   text-decoration: none;
+  /* WCAG 2.5.8 target-size floor. Deliberately not promoted to the 44px .button
+     pill — it is an inline text affordance inside eight card headers. */
+  min-height: 24px;
 }
 .portal-card-link:hover { color: var(--hive); }
 .portal-card-link .icon { width: 14px; height: 14px; transform: rotate(180deg); }
@@ -907,18 +908,12 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 .portal-pipe-col small { display: block; margin: 2px 0 8px; color: var(--hive-soft); font-size: .68rem; font-weight: 800; }
 .portal-pipe-col button {
   width: 100%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  padding: 6px 9px;
+  /* Stays a rounded rect, not a pill — a full-width card action. */
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
-  border-radius: 9px;
   background: var(--cream);
   color: var(--honey-deep);
-  font-weight: 900;
   font-size: .7rem;
-  cursor: pointer;
 }
 .portal-pipe-col button:hover { border-color: var(--honey); }
 .portal-pipe-col button .icon { width: 13px; height: 13px; transform: rotate(180deg); }
@@ -927,23 +922,21 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 /* --- Quick actions --- */
 .portal-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .portal-action {
-  display: inline-flex;
-  align-items: center;
+  /* A left-aligned tile rather than a pill. */
+  justify-content: flex-start;
   gap: 9px;
-  padding: 13px 16px;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--radius-lg);
   background: var(--cream);
   color: var(--hive);
-  font-weight: 900;
   font-size: .82rem;
-  cursor: pointer;
   text-align: left;
-  transition: border-color .15s, transform .15s;
 }
-.portal-action:hover { border-color: var(--honey); transform: translateY(-2px); }
+/* The one ghost control that does lift — must out-specify the flat-hover rule
+   on .button-ghost, hence the compound selector. */
+.button-ghost.portal-action:hover:not(:disabled):not([aria-disabled="true"]) { border-color: var(--honey); transform: translateY(-2px); }
 .portal-action .icon { color: var(--honey-deep); width: 18px; height: 18px; }
-.portal-action-inline { width: auto; padding: 9px 14px; }
+.portal-action-inline { width: auto; }
 
 /* --- Attendance summary / toggle --- */
 .portal-attendance-summary { list-style: none; display: flex; gap: 14px; flex-wrap: wrap; margin: 0; padding: 0; }
@@ -982,15 +975,11 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 
 .portal-attendance-toggle { display: inline-flex; gap: 4px; padding: 3px; border-radius: 999px; background: var(--white); border: 1px solid var(--border); }
 .portal-att-btn {
-  border: 1px solid transparent;
-  background: transparent;
-  padding: 7px 12px;
-  border-radius: 999px;
+  /* 1px, not the base's 2px: three of these sit inside a 3px-padded pill track. */
+  border-width: 1px;
+  padding-inline: var(--space-3);
   font-size: .72rem;
-  font-weight: 900;
-  cursor: pointer;
   color: var(--hive-soft);
-  transition: background .15s, color .15s, border-color .15s;
 }
 .portal-att-btn:hover { color: var(--hive); }
 .portal-att-present.is-on { background: var(--leaf-soft); border-color: var(--leaf); color: #37622a; }
@@ -1094,7 +1083,6 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 .portal-mood label input { position: absolute; opacity: 0; pointer-events: none; }
 .portal-mood label.is-on { background: var(--nectar); border-color: var(--honey); color: var(--hive); }
 .portal-diary-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-.portal-btn-save { padding: 10px 22px; }
 
 /* --- Tables --- */
 .portal-table-wrap { overflow-x: auto; }

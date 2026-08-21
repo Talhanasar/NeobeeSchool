@@ -93,7 +93,7 @@ export function PortalApp() {
         <div className="portal-topbar-inner">
           <button
             type="button"
-            className="portal-menu-btn"
+            className="button button-ghost button-icon button-sm portal-menu-btn"
             aria-expanded={mobileNav}
             aria-controls="portal-sidebar"
             aria-label={mobileNav ? "Close navigation" : "Open navigation"}
@@ -119,7 +119,7 @@ export function PortalApp() {
               <button
                 key={r}
                 type="button"
-                className={r === role ? "is-on" : undefined}
+                className={`button button-ghost button-sm${r === role ? " is-on" : ""}`}
                 aria-current={r === role ? "true" : undefined}
                 onClick={() => switchRole(r)}
               >
@@ -128,7 +128,7 @@ export function PortalApp() {
               </button>
             ))}
           </nav>
-          <button type="button" className="portal-back" onClick={signOut}>
+          <button type="button" className="button button-ghost button-sm portal-back" onClick={signOut}>
             <PortalIcon name="back" />
             <span>Sign out</span>
           </button>
@@ -333,7 +333,7 @@ function Sidebar({
           <button
             key={item.id}
             type="button"
-            className={view === item.id ? "is-on" : undefined}
+            className={`button button-ghost button-sm${view === item.id ? " is-on" : ""}`}
             aria-current={view === item.id ? "page" : undefined}
             onClick={() => {
               onPick(item.id);
@@ -497,7 +497,7 @@ function AdminDashboard({
                 <button
                   key={action.label}
                   type="button"
-                  className="portal-action"
+                  className="button button-ghost portal-action"
                   onClick={() => showToast(`${action.label} · Demo only`)}
                 >
                   <PortalIcon name={action.icon} />
@@ -550,6 +550,7 @@ function AdminDashboard({
                         <small>{lead.classLabel} · {lead.age}</small>
                         <button
                           type="button"
+                          className="button button-ghost button-sm"
                           onClick={() => showToast(`Opening ${lead.name} · Demo only`)}
                         >
                           Open lead <PortalIcon name="back" />
@@ -596,7 +597,7 @@ function AdminDashboard({
             </h3>
             <button
               type="button"
-              className="portal-action portal-action-inline"
+              className="button button-ghost portal-action portal-action-inline"
               onClick={() => showToast("Compose notice · Demo only")}
             >
               <PortalIcon name="plus" />
@@ -839,7 +840,7 @@ function TeacherDashboard({
                         <button
                           key={option}
                           type="button"
-                          className={`portal-att-btn portal-att-${option}${status === option ? " is-on" : ""}`}
+                          className={`button button-ghost button-sm portal-att-btn portal-att-${option}${status === option ? " is-on" : ""}`}
                           aria-pressed={status === option}
                           onClick={() => setStatus(student.id, option)}
                         >
@@ -934,7 +935,7 @@ function TeacherDashboard({
                   </label>
                 </div>
                 <div className="portal-diary-actions">
-                  <button type="submit" className="button button-primary portal-btn-save">
+                  <button type="submit" className="button button-primary">
                     Save diary entry
                   </button>
                   <button

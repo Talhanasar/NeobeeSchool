@@ -123,7 +123,7 @@ export function SiteHeader() {
 
           <button
             ref={toggleRef}
-            className="menu-button"
+            className="button button-ghost button-icon menu-button"
             type="button"
             aria-expanded={open}
             aria-controls="site-drawer"
