@@ -191,7 +191,7 @@ export default function HomePage() {
           </ol>
           <div className="inquiry-layout" id="inquiry">
             <aside className="inquiry-copy">
-              <p className="eyebrow">Let’s talk</p>
+              <p className="eyebrow light">Let’s talk</p>
               <h2>Start with a simple inquiry</h2>
               <p>Tell us about your child and we will call you back.</p>
               <div className="contact-mini">

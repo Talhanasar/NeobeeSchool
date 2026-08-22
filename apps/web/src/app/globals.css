@@ -212,8 +212,14 @@ svg { display: block; }
 .button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
 .button:disabled, .button[aria-disabled="true"] { opacity: var(--disabled-opacity); cursor: not-allowed; transform: none; box-shadow: none; }
 .button-primary { background: var(--honey); color: var(--hive); box-shadow: 0 8px 20px rgba(197, 125, 0, .22); }
-.button-primary:hover:not(:disabled):not([aria-disabled="true"]) { background: var(--honey-deep); color: var(--white); }
-.button-primary:active { background: var(--honey-deep-hover); }
+/* Label stays --hive through hover: white on --honey-deep is 3.40:1, hive is 4.75:1.
+   :active deliberately reuses the hover fill instead of --honey-deep-hover
+   (#a86400), which inverts the maths — hive drops to 3.45:1 on it while white
+   would pass. Flipping the label colour mid-press to chase that is worse than
+   holding one fill, so the press reads through the base rule's removed lift and
+   cleared shadow. This leaves --honey-deep-hover with no consumers. */
+.button-primary:hover:not(:disabled):not([aria-disabled="true"]) { background: var(--honey-deep); color: var(--hive); }
+.button-primary:active { background: var(--honey-deep); color: var(--hive); }
 .button-secondary { background: transparent; border-color: var(--hive); color: var(--hive); }
 .button-secondary:hover:not(:disabled):not([aria-disabled="true"]) { background: var(--hive); color: var(--nectar); }
 .button-secondary:active { background: var(--hive-hover); }
@@ -239,7 +245,7 @@ svg { display: block; }
 .menu-button { display: none; margin-left: auto; border-radius: var(--radius-md); color: var(--hive); }
 
 .honeycomb-bg { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cpath d='M28 1 55 17v31L28 64 1 48V17Zm0 63 27 16v17H1V80Z' fill='none' stroke='%23D68A00' stroke-opacity='.08'/%3E%3C/svg%3E"); }
-.eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; color: var(--honey-deep); font-size: .75rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+.eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; color: var(--accent-on-light); font-size: .75rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
 .eyebrow::before { content: ""; width: 27px; height: 3px; background: var(--honey); border-radius: 3px; }
 .eyebrow.light { color: var(--honey); }
 .status-pill { display: inline-flex; align-items: center; gap: 8px; margin: 4px 0 18px; padding: 6px 13px; border: 1px solid #efc6be; border-radius: 999px; background: #fff1ee; color: #923f32; font-size: .76rem; font-weight: 900; }
@@ -346,7 +352,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   margin: 0;
   border-color: rgba(197, 125, 0, .3);
   background: var(--white);
-  color: var(--honey-deep);
+  color: var(--accent-on-light);
 }
 .admissions-status .status-pill > span {
   background: var(--honey-deep);
@@ -371,7 +377,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   box-shadow: 0 4px 12px rgba(104, 70, 8, .05);
 }
 .age-guide-item strong {
-  color: var(--honey-deep);
+  color: var(--accent-on-light);
   font-size: var(--text-xs);
   font-weight: 900;
   letter-spacing: .08em;
@@ -402,12 +408,18 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 15px; }
 .field { margin-bottom: 17px; }
 .field label { display: block; margin-bottom: var(--space-2); color: var(--hive-soft); font-size: var(--text-xs); font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }.field label span { color: var(--danger); }
-.field input, .field select, .field textarea { width: 100%; min-height: var(--space-7); padding: var(--space-3) var(--space-3); border: 2px solid rgba(83,61,19,.16); border-radius: 11px; background: var(--cream); color: var(--hive); transition: border-color var(--duration-normal), background var(--duration-normal), box-shadow var(--duration-normal); }
+.field input, .field select, .field textarea { width: 100%; min-height: var(--space-7); padding: var(--space-3) var(--space-3); border: 2px solid var(--border-strong); border-radius: 11px; background: var(--cream); color: var(--hive); transition: border-color var(--duration-normal), background var(--duration-normal), box-shadow var(--duration-normal); }
 .field textarea { resize: vertical; }
-.field input:hover, .field select:hover, .field textarea:hover { border-color: rgba(83,61,19,.25); }
+.field input:hover, .field select:hover, .field textarea:hover { border-color: var(--hive-soft); }
 .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--honey-deep); background: var(--white); box-shadow: 0 0 0 3px rgba(245,168,28,.15); }
-.field input:disabled, .field select:disabled, .field textarea:disabled { opacity: 0.6; cursor: not-allowed; background: var(--cream-2); }
+/* Explicit pair, not opacity: opacity composites text AND background against the
+   page, which drags this to 4.11:1. --hive-soft on --cream-2 is 6.48:1. */
+.field input:disabled, .field select:disabled, .field textarea:disabled { cursor: not-allowed; background: var(--cream-2); color: var(--hive-soft); border-color: var(--border-strong); }
 .field input:read-only, .field select:read-only, .field textarea:read-only { background: var(--cream-hover); border-style: dashed; }
+/* No ::placeholder rule existed, so placeholder text fell back to the UA default,
+   which is unmeasurable and typically well under 4.5:1. --ink-placeholder is
+   5.07:1 on --cream, the .field input fill. */
+.field input::placeholder, .field textarea::placeholder { color: var(--ink-placeholder); opacity: 1; }
 .field input[aria-invalid="true"], .field select[aria-invalid="true"] { border-color: var(--danger); }
 .field-error { margin: var(--space-2) 0 0; color: var(--danger); font-size: var(--text-xs); font-weight: 800; line-height: 1.35; }
 .form-submit { width: 100%; }
@@ -417,13 +429,13 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 .contact-list { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 18px; }
 .contact-item { display: flex; gap: 13px; align-items: flex-start; }
 .contact-item .hex-icon { width: 42px; height: 46px; }.contact-item .hex-icon .icon { width: 20px; }
-.contact-item h3 { margin: 1px 0 3px; font-size: .91rem; }.contact-item p, .contact-item a { margin: 0; color: var(--hive-soft); font-size: .78rem; text-decoration: none; line-height: 1.5; }.contact-item a:hover { color: var(--honey-deep); text-decoration: underline; }
+.contact-item h3 { margin: 1px 0 3px; font-size: .91rem; }.contact-item p, .contact-item a { margin: 0; color: var(--hive-soft); font-size: .78rem; text-decoration: none; line-height: 1.5; }.contact-item a:hover { color: var(--accent-on-light); text-decoration: underline; }
 .map-card { overflow: hidden; display: grid; grid-template-rows: 1.25fr .75fr; min-height: 475px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--white); box-shadow: var(--shadow-lg); }
 .map-card > div:last-child { padding: 25px 29px; }.map-card h3 { margin: 0 0 5px; font-size: 1.25rem; }.map-card p:not(.eyebrow) { margin: 0 0 10px; color: var(--hive-soft); font-size: .83rem; }
 .map-pattern { position: relative; overflow: hidden; background-color: #e7f0dd; background-image: linear-gradient(30deg, transparent 48%, rgba(255,255,255,.75) 48%, rgba(255,255,255,.75) 54%, transparent 54%), linear-gradient(120deg, transparent 45%, rgba(255,255,255,.7) 45%, rgba(255,255,255,.7) 50%, transparent 50%); }
 .map-pattern::before, .map-pattern::after { content: ""; position: absolute; border-radius: 50%; background: #d2e6eb; }.map-pattern::before { width: 180px; height: 180px; top: -100px; right: 30px; }.map-pattern::after { width: 90px; height: 90px; bottom: -45px; left: 25px; }
 .map-pin { position: absolute; z-index: 2; left: 55%; top: 45%; width: 64px; height: 70px; display: grid; place-items: center; background: var(--honey); color: var(--hive); clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%); filter: drop-shadow(0 8px 8px rgba(63,43,7,.2)); }.map-pin .icon { width: 28px; height: 28px; }
-.text-link { display: inline-flex; align-items: center; gap: 6px; color: var(--honey-deep); font-size: .78rem; font-weight: 900; text-decoration: none; }.text-link:hover { text-decoration: underline; }
+.text-link { display: inline-flex; align-items: center; gap: 6px; color: var(--accent-on-light); font-size: .78rem; font-weight: 900; text-decoration: none; }.text-link:hover { text-decoration: underline; }
 
 .site-footer { padding: 62px 0 25px; border-top: 6px solid var(--honey); background: var(--hive); color: #d9ccb0; }
 .footer-grid { display: grid; grid-template-columns: 1.6fr .8fr .8fr 1.1fr; gap: 45px; padding-bottom: 38px; }
@@ -506,7 +518,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   box-shadow: 0 18px 40px rgba(197, 125, 0, .28);
   transition: transform .2s, background .2s, color .2s;
 }
-.floating-cta:hover { transform: translateY(-2px); background: var(--honey-deep); color: var(--white); }
+.floating-cta:hover { transform: translateY(-2px); background: var(--honey-deep); color: var(--hive); }
 .floating-cta .icon { width: 20px; height: 20px; }
 @media (max-width: 560px) {
   .floating-cta { right: 14px; bottom: 14px; padding: 11px 14px; font-size: .72rem; }
@@ -652,7 +664,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 }
 .portal-sidebar-group {
   margin: 18px 8px 8px;
-  color: #8a734a;
+  color: var(--ink-muted-on-dark);
   font-size: .6rem;
   font-weight: 900;
   letter-spacing: .18em;
@@ -703,7 +715,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 .portal-sidebar-foot a:hover { color: var(--white); }
 .portal-sidebar-foot p {
   margin: 0;
-  color: #8a734a;
+  color: var(--ink-muted-on-dark);
   font-size: .64rem;
   font-weight: 700;
   line-height: 1.4;
@@ -739,7 +751,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 
 /* --- Page header --- */
 .portal-page-head { display: flex; flex-direction: column; gap: 6px; }
-.portal-crumb { margin: 0; color: var(--honey-deep); font-size: .68rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; display: flex; flex-wrap: wrap; gap: 6px; }
+.portal-crumb { margin: 0; color: var(--accent-on-light); font-size: .68rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; display: flex; flex-wrap: wrap; gap: 6px; }
 .portal-crumb i { font-style: normal; opacity: .5; }
 .portal-page-head h1 { margin: 0; font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 700; letter-spacing: -.025em; }
 .portal-page-head p { margin: 0; color: var(--hive-soft); font-size: .9rem; max-width: 760px; }
@@ -809,7 +821,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   background: transparent;
   border: 0;
   padding: 4px 0;
-  color: var(--honey-deep);
+  color: var(--accent-on-light);
   font-weight: 900;
   font-size: .72rem;
   cursor: pointer;
@@ -912,7 +924,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--cream);
-  color: var(--honey-deep);
+  color: var(--accent-on-light);
   font-size: .7rem;
 }
 .portal-pipe-col button:hover { border-color: var(--honey); }
@@ -991,7 +1003,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 .portal-diary-controls select {
   min-height: 38px;
   padding: 6px 12px;
-  border: 1.5px solid var(--border);
+  border: 1.5px solid var(--border-strong);
   border-radius: 10px;
   background: var(--white);
   color: var(--hive);
@@ -1030,7 +1042,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   width: 100%;
   min-height: 44px;
   padding: 10px 12px;
-  border: 1.5px solid var(--border);
+  border: 1.5px solid var(--border-strong);
   border-radius: 12px;
   background: var(--cream);
   color: var(--hive);
@@ -1046,6 +1058,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   background: var(--white);
   box-shadow: 0 0 0 3px rgba(245, 168, 28, .18);
 }
+.portal-diary-grid label input::placeholder, .portal-diary-grid label textarea::placeholder { color: var(--ink-placeholder); opacity: 1; }
 .portal-diary-wide { grid-column: 1 / -1; }
 .portal-mood {
   grid-column: 1 / -1;
@@ -1184,7 +1197,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 /* --- Teacher grid --- */
 .portal-teacher-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .portal-class-summary { display: flex; flex-direction: column; gap: 10px; }
-.portal-class-tagline { margin: 0; color: var(--honey-deep); font-weight: 900; text-transform: uppercase; font-size: .74rem; letter-spacing: .08em; }
+.portal-class-tagline { margin: 0; color: var(--accent-on-light); font-weight: 900; text-transform: uppercase; font-size: .74rem; letter-spacing: .08em; }
 .portal-class-meta { list-style: none; display: grid; gap: 6px; margin: 4px 0 0; padding: 0; color: var(--hive-soft); font-size: .82rem; font-weight: 700; }
 .portal-class-meta strong { color: var(--hive); font-family: "Fredoka", sans-serif; font-weight: 600; }
 
@@ -1214,7 +1227,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   font-family: "Fredoka", sans-serif;
   font-weight: 600;
   font-size: .78rem;
-  color: var(--honey-deep);
+  color: var(--accent-on-light);
   text-align: left;
   align-self: start;
 }
@@ -1271,8 +1284,8 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 .portal-invoice-month { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: .9rem; }
 .portal-invoices strong { display: block; font-size: .88rem; }
 .portal-invoices small { display: block; color: var(--hive-soft); font-size: .7rem; font-weight: 800; }
-.portal-invoice-amount { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 1.05rem; color: var(--honey-deep); }
-.portal-invoice-foot { font-size: .68rem; color: var(--leaf); font-weight: 900; }
+.portal-invoice-amount { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 1.05rem; color: var(--accent-on-light); }
+.portal-invoice-foot { font-size: .68rem; color: var(--leaf-hover); font-weight: 900; }
 
 /* --- Toast --- */
 .portal-toast {
@@ -1368,13 +1381,13 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   width: 100%;
   min-height: 46px;
   padding: 10px 13px;
-  border: 1.5px solid var(--border);
+  border: 1.5px solid var(--border-strong);
   border-radius: 12px;
   background: var(--cream);
   color: var(--hive);
   font-weight: 700;
 }
-.portal-login-field input:disabled { opacity: .6; cursor: not-allowed; }
+.portal-login-field input:disabled { cursor: not-allowed; background: var(--cream-2); color: var(--hive-soft); }
 .portal-login-hint {
   display: inline-flex;
   align-items: center;
@@ -1416,7 +1429,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 .portal-login-role.is-teacher .portal-login-avatar { background: var(--leaf-soft); color: #37622a; }
 .portal-login-role.is-parent .portal-login-avatar { background: var(--sky); color: #2e566e; }
 .portal-login-role-text { display: flex; flex-direction: column; gap: 2px; flex: 1; }
-.portal-login-role-text small { font-size: .62rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; color: var(--honey-deep); }
+.portal-login-role-text small { font-size: .62rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-on-light); }
 .portal-login-role-text strong { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: .98rem; }
 .portal-login-role-text em { font-style: normal; color: var(--hive-soft); font-size: .74rem; font-weight: 700; }
 .portal-login-back {
@@ -1424,7 +1437,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   align-items: center;
   justify-content: center;
   gap: 6px;
-  color: var(--honey-deep);
+  color: var(--accent-on-light);
   font-weight: 900;
   font-size: .78rem;
   text-decoration: none;
@@ -1561,7 +1574,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 
 .class-photo-card p:first-of-type {
   margin: var(--space-2) 0 0;
-  color: var(--honey-deep);
+  color: var(--accent-on-light);
   font-size: var(--text-sm);
   font-weight: 900;
   letter-spacing: .08em;
@@ -1597,7 +1610,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 .day-card time {
   display: block;
   margin-top: var(--space-3);
-  color: var(--honey-deep);
+  color: var(--accent-on-light);
   font-size: var(--text-sm);
   font-weight: 900;
   letter-spacing: .08em;
@@ -1799,7 +1812,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: .08em;
-  color: var(--honey-deep);
+  color: var(--accent-on-light);
   margin-bottom: 2px;
 }
 .step-list h3 {
@@ -1952,7 +1965,7 @@ details[open] .accordion-preview { display: none; }
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: .08em;
-  color: var(--honey-deep);
+  color: var(--accent-on-light);
   margin: 0;
 }
 .program-card .program-tagline {
@@ -1982,7 +1995,7 @@ details[open] .accordion-preview { display: none; }
 }
 .program-card .program-bullets li::before {
   content: "✓";
-  color: var(--leaf);
+  color: var(--leaf-hover);
   font-weight: 700;
 }
 
@@ -2264,7 +2277,7 @@ details[open] .accordion-preview { display: none; }
   align-items: center;
   gap: var(--space-2);
   margin-top: var(--space-2);
-  color: var(--honey-deep);
+  color: var(--accent-on-light);
   font-size: var(--text-xs);
   font-weight: 900;
   letter-spacing: .04em;
@@ -2328,7 +2341,7 @@ details[open] .accordion-preview { display: none; }
 }
 .news-card-label {
   margin: 0;
-  color: var(--honey-deep);
+  color: var(--accent-on-light);
   font-size: var(--text-xs);
   font-weight: 900;
   letter-spacing: .08em;
@@ -2377,7 +2390,7 @@ details[open] .accordion-preview { display: none; }
   padding: var(--space-1) var(--space-3);
   border-radius: 999px;
   background: var(--nectar);
-  color: var(--honey-deep);
+  color: var(--accent-on-light);
   font-size: var(--text-xs);
   font-weight: 900;
   letter-spacing: .06em;
