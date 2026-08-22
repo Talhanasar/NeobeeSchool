@@ -2219,6 +2219,11 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   align-items: center;
   margin: 0 0 var(--space-9) 0;
 }
+
+.split-section-flip .split-section-media {
+  order: -1;
+}
+
 .split-section .photo-frame {
   max-height: 20rem;
   width: auto;
@@ -2233,6 +2238,17 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 .split-section-text p {
   color: var(--hive-soft);
   margin: 0;
+}
+
+@media (max-width: 820px) {
+  .split-section {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+  }
+  .split-section-flip .split-section-media {
+    order: 0;
+  }
 }
 
 /* ---- Page hero ---- */
