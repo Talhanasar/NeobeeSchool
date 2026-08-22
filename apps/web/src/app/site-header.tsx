@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { navLinks } from "./site-config";
+import { useOverlay } from "./overlay";
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/";
@@ -36,49 +37,7 @@ export function SiteHeader() {
 
   const close = useCallback(() => setOpen(false), []);
 
-  // Escape to close, and keep Tab inside the drawer while it is open.
-  useEffect(() => {
-    if (!open) return;
-
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        close();
-        toggleRef.current?.focus();
-        return;
-      }
-
-      if (event.key !== "Tab") return;
-
-      const focusable = drawerRef.current?.querySelectorAll<HTMLElement>("a[href], button:not([disabled])");
-      if (!focusable || focusable.length === 0) return;
-
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      const active = document.activeElement;
-
-      // The toggle sits outside the drawer, so wrap against it in both directions.
-      if (event.shiftKey && (active === first || active === toggleRef.current)) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && active === last) {
-        event.preventDefault();
-        toggleRef.current?.focus();
-      }
-    }
-
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [open, close]);
-
-  // Scroll lock. Restores the previous value rather than assuming it was "".
-  useEffect(() => {
-    if (!open) return;
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previous;
-    };
-  }, [open]);
+  useOverlay({ open, onClose: close, overlayRef: drawerRef, toggleRef });
 
   return (
     <>

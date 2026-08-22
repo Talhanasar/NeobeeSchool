@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState, type RefObject } from "react";
 import Link from "next/link";
 import {
   AttendanceStatus,
@@ -31,6 +31,7 @@ import {
   studentsInClass,
 } from "./demo-data";
 import { PortalIcon, type PortalIconName } from "./icons";
+import { useOverlay } from "../overlay";
 
 // ---------- Types ----------------------------------------------------------
 
@@ -56,6 +57,12 @@ export function PortalApp() {
   >({});
   const [diaryOverrides, setDiaryOverrides] = useState<Record<string, DiaryEntry>>({});
   const [invoiceOverrides, setInvoiceOverrides] = useState<Record<string, InvoiceStatus>>({});
+
+  const sidebarRef = useRef<HTMLElement | null>(null);
+  const menuBtnRef = useRef<HTMLButtonElement | null>(null);
+
+  const closeMobileNav = useCallback(() => setMobileNav(false), []);
+  useOverlay({ open: mobileNav, onClose: closeMobileNav, overlayRef: sidebarRef, toggleRef: menuBtnRef });
 
   function showToast(text: string) {
     toastIdRef.current += 1;
@@ -93,6 +100,7 @@ export function PortalApp() {
         <div className="portal-topbar-inner">
           <button
             type="button"
+            ref={menuBtnRef}
             className="button button-ghost button-icon button-sm portal-menu-btn"
             aria-expanded={mobileNav}
             aria-controls="portal-sidebar"
@@ -139,6 +147,8 @@ export function PortalApp() {
         <Sidebar
           role={role}
           view={view}
+          sidebarRef={sidebarRef}
+          modal={mobileNav}
           onPick={(next) => {
             setView(next);
             setMobileNav(false);
@@ -190,7 +200,7 @@ export function PortalApp() {
           type="button"
           className="portal-nav-scrim"
           aria-label="Close navigation"
-          onClick={() => setMobileNav(false)}
+          onClick={closeMobileNav}
         />
       )}
 
@@ -307,16 +317,31 @@ function Sidebar({
   onPick,
   onCloseMobile,
   personaName,
+  sidebarRef,
+  modal,
 }: Readonly<{
   role: Role;
   view: AnyView;
   onPick: (next: AnyView) => void;
   onCloseMobile: () => void;
   personaName: string;
+  sidebarRef?: RefObject<HTMLElement | null>;
+  modal?: boolean;
 }>) {
   const items = useMemo(() => itemsForRole(role), [role]);
   return (
-    <aside id="portal-sidebar" className="portal-sidebar" aria-label="Portal navigation">
+    // Truthful marking: on desktop this aside is a plain persistent nav sidebar.
+    // While the mobile drawer is open it behaves as a modal dialog, so it gets
+    // both the dialog role and aria-modal for exactly that state — aria-modal
+    // without a dialog role is invalid ARIA. The behaviour lives in useOverlay.
+    <aside
+      id="portal-sidebar"
+      ref={sidebarRef}
+      className="portal-sidebar"
+      aria-label="Portal navigation"
+      role={modal ? "dialog" : undefined}
+      aria-modal={modal ? "true" : undefined}
+    >
       <div className="portal-sidebar-user">
         <span className="portal-sidebar-avatar" aria-hidden="true">
           {initialsFromName(personaName)}
