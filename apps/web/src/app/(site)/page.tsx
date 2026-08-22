@@ -4,6 +4,7 @@ import { InquiryForm } from "../inquiry-form";
 import { Icon } from "../icon-component";
 import type { IconName } from "../icon-component";
 import { SectionHeading, ContactItem } from "../section-heading";
+import { RevealGrid, RevealItem } from "../reveal";
 import Hero from "../hero";
 import { PhotoFrame } from "../photo";
 import { photos } from "../photos";
@@ -80,16 +81,18 @@ export default function HomePage() {
       <section className="section academics-section" id="academics">
         <div className="container">
           <SectionHeading centered eyebrow="Our academics" title={<>What your child <em>learns with us</em></>} lead="Nine areas of learning, woven into one gentle day — not split into separate subjects." />
-          <div className="academics-grid">
+          <RevealGrid className="academics-grid">
             {academics.map((a) => (
-              <Link className="academics-card" key={a.title} href={a.href}>
-                <span className="academics-card-art" aria-hidden="true"><Image src={a.art} alt="" aria-hidden="true" width={a.width} height={a.height} unoptimized /></span>
-                <h3>{a.title}</h3>
-                <p>{a.body}</p>
-                <span className="academics-card-more">Explore <Icon name="arrow" /></span>
-              </Link>
+              <RevealItem key={a.title}>
+                <Link className="academics-card" href={a.href}>
+                  <span className="academics-card-art" aria-hidden="true"><Image src={a.art} alt="" aria-hidden="true" width={a.width} height={a.height} unoptimized /></span>
+                  <h3>{a.title}</h3>
+                  <p>{a.body}</p>
+                  <span className="academics-card-more">Explore <Icon name="arrow" /></span>
+                </Link>
+              </RevealItem>
             ))}
-          </div>
+          </RevealGrid>
         </div>
       </section>
 
@@ -149,21 +152,23 @@ export default function HomePage() {
       <section className="section news-section" id="news">
         <div className="container">
           <SectionHeading centered eyebrow="What’s new" title={<>News and <em>offers for families</em></>} lead="Stay informed on new updates and special offers at Neobee." />
-          <div className="news-grid">
+          <RevealGrid className="news-grid">
             {news.map((n) => (
-              <article className="news-card" key={n.title}>
-                {n.art ? (
-                  <span className="news-card-art" aria-hidden="true"><Image src={n.art} alt="" aria-hidden="true" width={n.width} height={n.height} unoptimized /></span>
-                ) : (
-                  <span className="news-card-art news-card-art-badge" aria-hidden="true"><strong>{n.badge}</strong></span>
-                )}
-                <p className="news-card-label">{n.label}</p>
-                <h3>{n.title}</h3>
-                <p>{n.body}</p>
-                <Link className="text-link" href={n.href}>Learn more <Icon name="arrow" /></Link>
-              </article>
+              <RevealItem key={n.title}>
+                <article className="news-card">
+                  {n.art ? (
+                    <span className="news-card-art" aria-hidden="true"><Image src={n.art} alt="" aria-hidden="true" width={n.width} height={n.height} unoptimized /></span>
+                  ) : (
+                    <span className="news-card-art news-card-art-badge" aria-hidden="true"><strong>{n.badge}</strong></span>
+                  )}
+                  <p className="news-card-label">{n.label}</p>
+                  <h3>{n.title}</h3>
+                  <p>{n.body}</p>
+                  <Link className="text-link" href={n.href}>Learn more <Icon name="arrow" /></Link>
+                </article>
+              </RevealItem>
             ))}
-          </div>
+          </RevealGrid>
         </div>
       </section>
 

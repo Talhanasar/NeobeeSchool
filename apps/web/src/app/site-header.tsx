@@ -3,7 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import { navLinks } from "./site-config";
 import { useOverlay } from "./overlay";
 
@@ -31,6 +31,7 @@ const itemVariants = {
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [condensed, setCondensed] = useState(false);
   const pathname = usePathname();
   const drawerRef = useRef<HTMLElement | null>(null);
   const toggleRef = useRef<HTMLButtonElement | null>(null);
@@ -38,6 +39,16 @@ export function SiteHeader() {
   const close = useCallback(() => setOpen(false), []);
 
   useOverlay({ open, onClose: close, overlayRef: drawerRef, toggleRef });
+
+  // Header condense. The scroll position maps to a 0→1 progress value; crossing
+  // the halfway point toggles a class and lets CSS tween height + shadow. The
+  // tween lives in CSS because height here must respect the nav-shell token and
+  // the compact media query — an inline motion value would override both.
+  const { scrollY } = useScroll();
+  const condenseProgress = useTransform(scrollY, [0, 100], [0, 1]);
+  useMotionValueEvent(condenseProgress, "change", (value) => {
+    setCondensed(value > 0.5);
+  });
 
   return (
     <>
@@ -47,7 +58,7 @@ export function SiteHeader() {
           paint over the header's own background, dimming the brand and close button. */}
       <AnimatePresence>
         {open && (
-          <motion.div
+          <m.div
             className="nav-scrim"
             onClick={close}
             initial={{ opacity: 0 }}
@@ -58,7 +69,7 @@ export function SiteHeader() {
         )}
       </AnimatePresence>
 
-      <header className="site-header">
+      <header className={condensed ? "site-header is-condensed" : "site-header"}>
         <div className="container nav-shell">
           <Link className="brand" href="/" aria-label="Neobee Preschool home">
             <span className="brand-mark" aria-hidden="true"><BeeIcon /></span>
@@ -95,7 +106,7 @@ export function SiteHeader() {
 
         <AnimatePresence>
           {open && (
-            <motion.nav
+            <m.nav
               ref={drawerRef}
               id="site-drawer"
               className="site-drawer"
@@ -108,7 +119,7 @@ export function SiteHeader() {
               exit="closed"
             >
               {navLinks.map((link) => (
-                <motion.div key={link.href} variants={itemVariants}>
+                <m.div key={link.href} variants={itemVariants}>
                   <Link
                     href={link.href}
                     className={isActive(pathname, link.href) ? "is-active" : undefined}
@@ -117,14 +128,14 @@ export function SiteHeader() {
                   >
                     {link.label}
                   </Link>
-                </motion.div>
+                </m.div>
               ))}
-              <motion.div variants={itemVariants} className="site-drawer-cta">
+              <m.div variants={itemVariants} className="site-drawer-cta">
                 <Link className="button button-primary" href="/admissions/apply" onClick={close}>
                   Apply Now
                 </Link>
-              </motion.div>
-            </motion.nav>
+              </m.div>
+            </m.nav>
           )}
         </AnimatePresence>
       </header>

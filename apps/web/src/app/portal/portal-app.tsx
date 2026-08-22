@@ -32,6 +32,7 @@ import {
 } from "./demo-data";
 import { PortalIcon, type PortalIconName } from "./icons";
 import { useOverlay } from "../overlay";
+import { AnimatePresence, m } from "framer-motion";
 
 // ---------- Types ----------------------------------------------------------
 
@@ -204,12 +205,22 @@ export function PortalApp() {
         />
       )}
 
-      {toast && (
-        <div className="portal-toast" role="status" aria-live="polite">
-          <PortalIcon name="check" />
-          <span>{toast.text}</span>
-        </div>
-      )}
+      <AnimatePresence>
+        {toast && (
+          <m.div
+            className="portal-toast"
+            role="status"
+            aria-live="polite"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 12, transition: { duration: 0.15 } }}
+            transition={{ duration: 0.2, ease: [0, 0, 0.2, 1] }}
+          >
+            <PortalIcon name="check" />
+            <span>{toast.text}</span>
+          </m.div>
+        )}
+      </AnimatePresence>
 
       <Link className="portal-back-website" href="/">
         <PortalIcon name="back" />

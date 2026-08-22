@@ -170,8 +170,14 @@ svg { display: block; }
 .announcement-label { display: inline-flex; align-items: center; gap: 6px; color: var(--hive); background: var(--honey); padding: 2px 11px; border-radius: 999px; letter-spacing: .05em; text-transform: uppercase; font-size: .69rem; }
 .announcement-label .icon { width: 14px; }
 
-.site-header { position: sticky; top: 0; z-index: var(--z-sticky); background: rgba(255, 250, 240, .94); border-bottom: 1px solid var(--border-subtle); backdrop-filter: blur(14px); }
-.nav-shell { height: var(--header-h); display: flex; align-items: center; gap: var(--space-6); }
+.site-header { position: sticky; top: 0; z-index: var(--z-sticky); background: rgba(255, 250, 240, .94); border-bottom: 1px solid var(--border-subtle); backdrop-filter: blur(14px); transition: box-shadow var(--duration-normal) var(--easing-standard); }
+/* Condensed state is toggled from useScroll/useTransform in site-header.tsx once
+   scroll progress passes its midpoint; CSS tweens it so height keeps respecting
+   the nav-shell token and the compact media query. Anchor targets overshoot by
+   the 8px height delta — scroll-padding is deliberately not adjusted per-frame. */
+.site-header.is-condensed { box-shadow: var(--shadow); }
+.nav-shell { height: var(--header-h); display: flex; align-items: center; gap: var(--space-6); transition: height var(--duration-normal) var(--easing-standard); }
+.site-header.is-condensed .nav-shell { height: 68px; }
 .brand { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; flex: 0 1 auto; min-width: 0; }
 .brand-mark { width: 47px; height: 47px; display: grid; place-items: center; padding: 7px; background: var(--honey); clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%); color: var(--hive); flex: none; }
 .brand-mark svg { width: 100%; }
@@ -207,10 +213,15 @@ svg { display: block; }
 .site-drawer-cta a { justify-content: center; }
 
 /* Button contract: .button owns geometry + states; variants own colour only;
-   sizes own height + padding + font-size. Nothing else may set a button's height. */
+   sizes own height + padding + font-size. Nothing else may set a button's height.
+   Hover/press deliberately stay HERE in CSS, not Framer Motion (Phase 6): the
+   site is fully prerendered, so CSS states work before hydration and without
+   JS, and the hover-bearing cards/CTAs are server components that a motion
+   wrapper would drag into the client bundle. Framer Motion owns mount/unmount,
+   scroll-linked and staggered choreography only (see reveal.tsx). */
 .button { min-height: var(--control-h-md); display: inline-flex; justify-content: center; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-5); border: 2px solid transparent; border-radius: var(--radius-full); text-decoration: none; font-weight: 900; font-size: var(--text-sm); cursor: pointer; transition: transform var(--duration-normal) var(--easing-standard), background var(--duration-normal), color var(--duration-normal), border-color var(--duration-normal), box-shadow var(--duration-normal); }
 .button:hover:not(:disabled):not([aria-disabled="true"]) { transform: translateY(-2px); }
-.button:active { transform: translateY(0); box-shadow: none; }
+.button:active { transform: translateY(0) scale(.98); box-shadow: none; }
 .button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
 .button:disabled, .button[aria-disabled="true"] { opacity: var(--disabled-opacity); cursor: not-allowed; transform: none; box-shadow: none; }
 .button-primary { background: var(--honey); color: var(--hive); box-shadow: 0 8px 20px rgba(197, 125, 0, .22); }
@@ -1300,8 +1311,11 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   position: fixed;
   z-index: var(--z-toast);
   left: 50%;
+  /* Centered via the `translate` property, not `transform`: Framer Motion owns
+     `transform` for the enter/exit y-tween, and an inline transform would clobber
+     a transform-based centering. `translate` composes with it. */
+  translate: -50% 0;
   bottom: 28px;
-  transform: translateX(-50%);
   display: inline-flex;
   align-items: center;
   gap: 9px;
@@ -1312,10 +1326,8 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   font-weight: 800;
   font-size: .82rem;
   box-shadow: var(--shadow-lg);
-  animation: portalToastIn .2s ease;
 }
 .portal-toast .icon { color: var(--honey); width: 18px; height: 18px; }
-@keyframes portalToastIn { from { transform: translate(-50%, 12px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 
 /* --- Back to website floating button --- */
 .portal-back-website {
@@ -1532,8 +1544,7 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
 
 @media (prefers-reduced-motion: reduce) {
   .portal-login-role, .portal-login-role:hover, .portal-action, .portal-action:hover,
-  .portal-sidebar, .portal-toast { transition: none !important; animation: none !important; }
-  .portal-toast { transform: translateX(-50%); }
+  .portal-sidebar { transition: none !important; animation: none !important; }
 }
 
 /* ---- Photo frames ---- */
@@ -1871,41 +1882,47 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
-.accordion-item summary {
+/* A real <button> since Phase 6 (was <summary> on a native <details>): the native
+   toggle cannot animate. The button reset matters — width/text-align keep the
+   previous summary layout, which a plain button would not reproduce. */
+.accordion-summary {
   display: flex;
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-5);
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
   cursor: pointer;
   list-style: none;
   outline: none;
   position: relative;
   min-height: 72px;
 }
-.accordion-item summary::-webkit-details-marker { display: none; }
-.accordion-item summary::after {
+.accordion-summary::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
 }
-.accordion-item summary:focus-visible::after {
+.accordion-summary:focus-visible::after {
   outline: 3px solid var(--honey-deep);
   outline-offset: 3px;
   border-radius: 8px;
 }
-.accordion-item summary .accordion-text {
+.accordion-summary .accordion-text {
   flex: 1 1 auto;
   min-width: 0;
 }
-.accordion-item summary .accordion-title {
+.accordion-summary .accordion-title {
   font-family: "Fredoka", sans-serif;
   font-weight: 600;
   font-size: var(--text-lg);
   color: var(--hive);
   display: block;
 }
-.accordion-item summary .accordion-preview {
+.accordion-summary .accordion-preview {
   color: var(--hive-soft);
   font-size: var(--text-sm);
   line-height: 1.4;
@@ -1915,8 +1932,8 @@ h1, h2, h3, h4 { font-family: "Fredoka", sans-serif; line-height: 1.14; }
   white-space: nowrap;
   margin-top: 2px;
 }
-details[open] .accordion-preview { display: none; }
-.accordion-item summary .accordion-marker {
+.accordion-item.is-open .accordion-preview { display: none; }
+.accordion-summary .accordion-marker {
   width: 14px;
   height: 14px;
   margin-left: auto;
@@ -1924,7 +1941,7 @@ details[open] .accordion-preview { display: none; }
   transition: transform var(--duration-normal) var(--easing-standard);
   color: var(--honey-deep);
 }
-.accordion-item summary .accordion-marker::before {
+.accordion-summary .accordion-marker::before {
   content: "";
   display: block;
   width: 9px;
@@ -1934,7 +1951,9 @@ details[open] .accordion-preview { display: none; }
   transform: rotate(45deg);
   margin: 2px 0 0 2px;
 }
-.accordion-item[open] summary .accordion-marker { transform: rotate(180deg); }
+.accordion-item.is-open .accordion-marker { transform: rotate(180deg); }
+/* Framer Motion animates this wrapper's height; the body itself is untouched. */
+.accordion-body-wrap { overflow: hidden; }
 .accordion-item .accordion-body {
   padding: 0 var(--space-5) var(--space-6);
   color: var(--hive-soft);

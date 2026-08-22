@@ -52,6 +52,13 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
   return (
     <html lang="en">
       <body>
+        {/* Scroll-reveal wrappers ship with opacity:0 in the prerendered HTML so
+            Framer Motion can animate them in. Without JS they would stay hidden —
+            this makes the content visible instead. !important is required to beat
+            the inline styles, which is also why it cannot live in globals.css. */}
+        <noscript>
+          <style>{`.js-reveal{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
         <SchoolJsonLd />
         <MotionProvider>{children}</MotionProvider>
       </body>

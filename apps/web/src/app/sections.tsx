@@ -39,39 +39,9 @@ function CtaLink({
 }
 
 /* ─── 1. Accordion ─── */
-
-export function Accordion({
-  items,
-  columns = 1,
-  defaultOpenIndex,
-}: Readonly<{
-  items: readonly { title: string; body: ReactNode; preview?: string }[];
-  columns?: 1 | 2;
-  defaultOpenIndex?: number;
-}>) {
-  return (
-    <div className="accordion" data-columns={columns}>
-      {items.map((item, i) => (
-        <details
-          key={i}
-          className="accordion-item"
-          open={i === defaultOpenIndex}
-        >
-          <summary>
-            <span className="accordion-text">
-              <span className="accordion-title">{item.title}</span>
-              {item.preview && (
-                <span className="accordion-preview">{item.preview}</span>
-              )}
-            </span>
-            <span className="accordion-marker" aria-hidden="true" />
-          </summary>
-          <div className="accordion-body">{item.body}</div>
-        </details>
-      ))}
-    </div>
-  );
-}
+// Client component since Phase 6 (Framer Motion height animation). Re-exported
+// here so page imports (`from "../../sections"`) keep working.
+export { Accordion } from "./accordion";
 
 /* ─── 2. ProgramCard + ProgramGrid ─── */
 
