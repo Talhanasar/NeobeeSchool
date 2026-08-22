@@ -33,6 +33,8 @@ yarn-error.log*
 .idea/
 .DS_Store
 Thumbs.db
+# phantom directory entry from a Windows tool; nothing is tracked here
+apps/mobile/nul/
 
 # Local certificates and keys
 *.pem
